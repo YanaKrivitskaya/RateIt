@@ -20,7 +20,7 @@ class RateItApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: ColorsPalette.flirtatious,
           scaffoldBackgroundColor: ColorsPalette.white,
-          textTheme: GoogleFonts.kleeOneTextTheme(Theme.of(context).textTheme),
+          textTheme: GoogleFonts.playpenSansTextTheme(Theme.of(context).textTheme),
           colorScheme: ColorScheme.fromSwatch().copyWith(
               secondary: ColorsPalette.turquoiseTopaz,
               outline: ColorsPalette.boyzone

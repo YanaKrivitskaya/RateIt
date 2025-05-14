@@ -22,45 +22,41 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    print(fullWidth);
     return Scaffold(
       body: BlocBuilder<LoginCubit, LoginState>(
         builder: (context, state) {
-          return Column(
-            children: [
-              SizedBox(height: sizerHeight),
-              _header(),
-              SizedBox(height: sizerHeight),
-              SizedBox(
-                width: fullWidth < 600 ? width80 : 600,
-                child: Column(
-                  children: [
-                    Text("Email", style: appTextStyle(color: ColorsPalette.boyzone, fontSize: headerFontSize)),
-                    _emailTextField(_emailController, state),
-                  ],
-                )
-              ),
-              SizedBox(height: formPaddingHeight),
-              _submitButton(context)
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: sizerHeight),
+                _header(),
+                SizedBox(height: sizerHeight),
+                SizedBox(
+                    width: fullWidth < 600 ? width80 : 600,
+                    child: Column(
+                      children: [
+                        Text("Email", style: appTextStyle(color: ColorsPalette.boyzone, fontSize: headerFontSize)),
+                        _emailTextField(_emailController, state),
+                      ])),
+                SizedBox(height: formPaddingHeight),
+                _submitButton(context)
+              ]));
+        }));
+  }}
 
 Widget _header() => Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      Text("Rate It!", style: headerTextStyle(color: ColorsPalette.algalFuel, fontSize: 60.0)),
-    ],
-  );
+      Text("Rate it!", style: headerTextStyle(color: ColorsPalette.algalFuel, fontSize: 60.0)),
+    ]);
 
 Widget _emailTextField(TextEditingController emailController, LoginState state) => new TextFormField(
     decoration: const InputDecoration(
-      //labelText: 'Email',
-        hintText: "username@company.com"
+      label: Center(
+        child: Text ("username@company.com"),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      alignLabelWithHint: true
     ),
     textAlign: TextAlign.center,
     keyboardType: TextInputType.emailAddress,

@@ -37,7 +37,7 @@ TextStyle headerTextStyle({Color? color, double? fontSize, FontWeight? weight, T
         decoration: decoration));
 
 TextStyle appTextStyle({Color? color, double? fontSize, FontWeight? weight, TextDecoration? decoration}) =>
-    GoogleFonts.quicksand(textStyle: TextStyle(
+    GoogleFonts.playpenSans(textStyle: TextStyle(
         color: color ?? Colors.black,
         fontSize: fontSize,
         fontWeight: weight ?? FontWeight.normal,
