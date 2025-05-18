@@ -50,7 +50,7 @@ Widget _header() => Row(
       Text("Rate it!", style: headerTextStyle(color: ColorsPalette.algalFuel, fontSize: 60.0)),
     ]);
 
-Widget _emailTextField(TextEditingController emailController, LoginState state) => new TextFormField(
+Widget _emailTextField(TextEditingController emailController, LoginState state) => TextFormField(
     decoration: const InputDecoration(
       label: Center(
         child: Text ("username@company.com"),
@@ -62,6 +62,7 @@ Widget _emailTextField(TextEditingController emailController, LoginState state) 
     keyboardType: TextInputType.emailAddress,
     autovalidateMode: AutovalidateMode.onUserInteraction,
     validator: (_) {
+      return null;
       //return (state is LoginStateEdit && !state.isEmailValid) ? 'Invalid Email' : null;
     },
     controller: emailController
