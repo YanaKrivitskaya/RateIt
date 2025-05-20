@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:rateit/database/api_user_repository.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../models/account.model.dart';
+import '../../../models/user.model.dart';
 
 part 'auth_state.dart';
 
@@ -27,7 +27,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void login(Account user){
+  void login(User user){
     return emit(Authenticated(user));
   }
 

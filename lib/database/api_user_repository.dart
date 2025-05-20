@@ -1,14 +1,15 @@
 
 import 'dart:convert';
 
-import 'package:rateit/models/account.model.dart';
+import 'package:rateit/models/custom_exception.dart';
+import 'package:rateit/models/user.model.dart';
 import 'package:rateit/services/api.service.dart';
 
 class ApiUserRepository{
   ApiService apiService = ApiService();
   String authUrl = 'auth/';
 
-  Future<void> signInWithEmail(String email) async{
+  Future<void> sendOtp(String email) async{
     var body = {
       "email": email
     };
@@ -20,37 +21,52 @@ class ApiUserRepository{
     }
   }
   
-  Future<Account> verifyOtp(String otp, String email) async{
+  Future<User> verifyOtp(String otp, String email) async{
     var body = {
       "email": email,
       "otp": otp
     };
+
+    var response = await apiService.verifyOtp('${authUrl}login', jsonEncode(body));
     try{
-      var response = await apiService.verifyOtp('${authUrl}login', jsonEncode(body));
-      var user = Account.fromMap(response["account"]);
+      var user = User.fromMap(response["account"]);
       return user;
-    }on Exception {
-      rethrow;
+    }catch(e) {
+      throw BadRequestException(e.toString());
     }
   }
 
-  Future<Account> getAccessToken() async{
+  Future<User> getAccessToken() async{
     final response = await apiService.refreshToken();
-    return Account.fromMap(response["account"]);
+    try{
+      return User.fromMap(response["account"]);
+    }
+    catch(e) {
+      throw BadRequestException(e.toString());
+    }
   }
 
-  Future<Account> getUser(int userId) async{
+  Future<User> getUser(int userId) async{
     final response = await apiService.getSecure('${authUrl}/users/${userId.toString()}');
-    return Account.fromMap(response);
+    try{
+      return User.fromMap(response);
+    }
+    catch(e) {
+      throw BadRequestException(e.toString());
+    }
   }
 
-  Future<Account> updateEmail(String email) async{
+  Future<User> updateEmail(String email) async{
     var body = {
       "email": email
     };
     final response = await apiService.putSecure('${authUrl}email', json.encode(body));
-
-    return Account.fromMap(response["account"]);
+    try{
+      return User.fromMap(response["account"]);
+    }
+    catch(e) {
+      throw BadRequestException(e.toString());
+    }
   }
 
   Future<void> signOut() async {

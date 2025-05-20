@@ -1,11 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/services/api.service.dart';
-import 'package:rateit/views/auth/auth_cubit.dart';
-import 'package:rateit/views/login/login_page.dart';
+import 'package:rateit/views/auth/cubit/auth_cubit.dart';
+import 'package:rateit/views/auth/login/login_page.dart';
 import 'package:rateit/views/temp.dart';
 import 'package:sizer/sizer.dart';
 
@@ -22,6 +23,8 @@ Future<void> main() async {
   );
 }
 
+final globalScaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
+
 class RateItApp extends StatelessWidget {
   const RateItApp({super.key});
 
@@ -30,6 +33,7 @@ class RateItApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
       return MaterialApp(
+        scaffoldMessengerKey: globalScaffoldMessenger,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: ColorsPalette.flirtatious,

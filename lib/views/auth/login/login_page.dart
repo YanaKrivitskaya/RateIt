@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rateit/views/login/cubit/login_cubit.dart';
+import 'package:rateit/views/auth/login/cubit/login_cubit.dart';
 
 import 'login_view.dart';
 
@@ -9,9 +9,11 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LoginCubit(),
-      child: LoginView()
+    return Scaffold(
+      body: BlocProvider(
+          create: (_) => LoginCubit(),
+          child: LoginView()
+      )
     );
   }
 }
