@@ -14,7 +14,7 @@ class Uninitialized extends AuthState {
 }
 
 class Authenticated extends AuthState{
-  final Account? user;
+  final User? user;
 
   const Authenticated(this.user);
 

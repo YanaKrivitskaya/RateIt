@@ -20,4 +20,5 @@ class ColorsPalette {
   static const Color turquoiseTopaz = Color(0xFF0FB9B1);
   static const Color blueGrey = Color(0xFFACC1DA);
   static const Color blueHorizon = Color(0xFF4B6584);
+  static const Color lynxWhite = Color(0xFFF5F6FA);
 }

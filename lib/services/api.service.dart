@@ -73,7 +73,7 @@ class ApiService {
     };
 
     try{
-      responseJson = await  sendPost(uri, headers, body);
+      responseJson = await sendPost(uri, headers, body);
       var verificationKey = responseJson["verificationKey"];
       await _storage!.write(key: "verificationKey", value: verificationKey);
 
@@ -100,6 +100,8 @@ class ApiService {
       responseJson = await sendPost(uri, headers, body);
     }on SocketException catch(e) {
       throw ConnectionException('No Internet connection (${e.message})');
+    } catch(e){
+      rethrow;
     }
 
     return responseJson;

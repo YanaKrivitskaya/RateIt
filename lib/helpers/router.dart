@@ -3,12 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rateit/helpers/route_constants.dart';
+import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
 
+import '../views/auth/otp/otp_verification_view.dart';
 import '../views/temp.dart';
 
 class RouteGenerator {
@@ -18,19 +16,19 @@ class RouteGenerator {
     switch (settings.name) {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => Temp());
-      /*case otpVerificationRoute:
+      case otpVerificationRoute:
         {
           if (args is String) {
             return MaterialPageRoute(
-              builder: (_) => BlocProvider<OtpBloc>(
-                create: (context) => OtpBloc()
+              builder: (_) => BlocProvider<OtpCubit>(
+                create: (context) => OtpCubit()
                 /*..add(OtpSent(args))*/,
                 child: OtpVerificationView(args),
               ),
             );
           }
           return _errorRoute();
-        }*/
+        }
       default:
         return _errorRoute();
     }

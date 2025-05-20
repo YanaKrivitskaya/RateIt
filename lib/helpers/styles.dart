@@ -21,6 +21,22 @@ final double scrollViewHeightSm = 30.h;
 final double scrollViewHeightMd = 35.h;
 final double scrollViewHeightLg = 60.h;
 
+//ANCHOR Sizer
+final double sizerHeightsm = 1.h;
+final double sizerWidthsm = 1.w;
+final double sizerWidthMd = 2.w;
+final double sizerHeightMd = 1.5.h;
+final double sizerHeightlg = 2.h;
+
+//ANCHOR Padding
+final double buttonPadding = 7.w; // Button padding
+final double viewPadding = 4.w;
+final double borderPadding = 3.w; // Border padding
+final double borderPaddingSm = 2.w;
+final double formBottomPadding = 4.h;
+final double formTopPadding = 20.h;
+final double imageCoverPadding = 2.5.h;
+
 //ANCHOR Font Size
 final double headerFontSize = 25.sp; // View headers
 final double smallHeaderFontSize = 20.sp; // View headers
@@ -32,7 +48,7 @@ final double fontSizexs = 10.sp;
 TextStyle headerTextStyle({Color? color, double? fontSize, FontWeight? weight, TextDecoration? decoration}) =>
     GoogleFonts.playpenSans(textStyle: TextStyle(
         color: color ?? Colors.black,
-        fontSize: fontSize,
+        fontSize: headerFontSize,
         fontWeight: weight ?? FontWeight.normal,
         decoration: decoration));
 
