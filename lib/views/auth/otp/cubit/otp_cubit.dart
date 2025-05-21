@@ -8,7 +8,7 @@ import '../../../../models/user.model.dart';
 part 'otp_state.dart';
 
 class OtpCubit extends Cubit<OtpState> {
-  ApiUserRepository _apiUserRepository;
+  final ApiUserRepository _apiUserRepository;
 
   OtpCubit() :
     _apiUserRepository = ApiUserRepository(),
@@ -19,7 +19,7 @@ class OtpCubit extends Cubit<OtpState> {
     try{
       var user = await _apiUserRepository.verifyOtp(otp, email);
       return emit(OtpStateSuccess(otp, user));
-    } on CustomException catch(e){
+    } catch(e){
       return emit(OtpStateError(otp, e.toString()));
     }
   }
@@ -29,7 +29,7 @@ class OtpCubit extends Cubit<OtpState> {
     try{
       await _apiUserRepository.sendOtp(email);
       return emit(OtpInitial());
-    } on CustomException catch(e){
+    } catch(e){
       return emit (OtpStateError(null, e.toString()));
     }
   }

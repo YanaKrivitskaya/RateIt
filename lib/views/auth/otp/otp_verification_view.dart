@@ -75,6 +75,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
             pinController.text = '';
           }
           if(state is OtpStateError){
+            pinController.text = '';
             var duration = Duration(days: 1);
             globalScaffoldMessenger.currentState!
               ..hideCurrentSnackBar()
