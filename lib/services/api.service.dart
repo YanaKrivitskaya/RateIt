@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:rateit/models/custom_exception.dart';
 import 'package:rateit/services/secure_storage.service.dart';
@@ -29,10 +30,17 @@ class ApiService {
   factory ApiService() => _instance ?? ApiService._internal();
 
   static Future<dynamic> init() async{
-    if(Platform.isAndroid){
-      await deviceInfoPlugin.androidInfo.then((data) => _deviceId = data.id);
-    }else if (Platform.isIOS) {
-      await deviceInfoPlugin.iosInfo.then((data) => _deviceId = data.identifierForVendor);
+    if(kIsWeb){
+      WebBrowserInfo webInfo = await deviceInfoPlugin.webBrowserInfo;
+      _deviceId = webInfo.userAgent;
+    }else{
+      if(Platform.isAndroid){
+        await deviceInfoPlugin.androidInfo.then((data) => _deviceId = data.id);
+      }else if (Platform.isIOS) {
+        await deviceInfoPlugin.iosInfo.then((data) => _deviceId = data.identifierForVendor);
+      }else if (Platform.isWindows) {
+        await deviceInfoPlugin.windowsInfo.then((data) => _deviceId = data.deviceId);
+      }
     }
   }
 
