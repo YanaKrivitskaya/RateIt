@@ -6,8 +6,8 @@ import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/views/auth/cubit/auth_cubit.dart';
 
-import '../../../helpers/widgets.dart';
-import '../../../main.dart';
+import 'package:rateit/helpers/widgets.dart';
+import 'package:rateit/main.dart';
 import 'cubit/otp_cubit.dart';
 
 class OtpVerificationView extends StatefulWidget {

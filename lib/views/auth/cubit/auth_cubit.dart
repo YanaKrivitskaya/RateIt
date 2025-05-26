@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:rateit/database/api_user_repository.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../models/user.model.dart';
+import 'package:rateit/models/user.model.dart';
 
 part 'auth_state.dart';
 
