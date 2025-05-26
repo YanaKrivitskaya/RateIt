@@ -13,7 +13,7 @@ class Attachment{
   const Attachment({
     this.id,
     this.name,
-    required this.source,
+    this.source,
     this.createdDate,
     this.updatedDate,
   });
@@ -30,8 +30,8 @@ class Attachment{
 
   factory Attachment.fromMap(Map<String, dynamic> map) {
     return Attachment(
-      id: map['id'] as int,
-      name: map['name'] as String,
+      id: map['id'],
+      name: map['name'],
       source: map['source'] != null ? Uint8List.fromList(map['source']['data'].cast<int>()) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),

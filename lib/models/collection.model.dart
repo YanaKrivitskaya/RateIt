@@ -40,10 +40,10 @@ class Collection{
 
   factory Collection.fromMap(Map<String, dynamic> map) {
     return Collection(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      description: map['description'] as String,
-      attachment: map['attachment'] != null ? Attachment.fromMap(map['attachment']) : null,
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      attachment: map['attachments'] != null ? Attachment.fromMap(map['attachments']) : null,
       properties: map['properties'] != null ? List<CollectionProperty>.from(map['properties']?.map((x) => CollectionProperty.fromMap(x))) : null,
       items: map['items'] != null ? List<CollectionItem>.from(map['items']?.map((x) => CollectionItem.fromMap(x))) : null,
       createdDate: DateTime.parse(map['createdDate']),

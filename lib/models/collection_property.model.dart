@@ -45,14 +45,14 @@ class CollectionProperty{
 
   factory CollectionProperty.fromMap(Map<String, dynamic> map) {
     return CollectionProperty(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      type: map['type'] as String,
-      comment: map['comment'] as String,
-      value: map['collection_item_value'] != null ? map['collection_item_value']['value'] as String : null,
-      isFilter: map['isFilter'] as bool,
-      isDropdown: map['isDropdown'] as bool,
-      dropdownOptions: map['dropdown_values'] != null ? List<String>.from(map['dropdown_values']?.map((d) => d['value'] as String)) : null,
+      id: map['id'],
+      name: map['name'],
+      type: map['type'],
+      comment: map['comment'],
+      value: map['collection_item_value'] != null ? map['collection_item_value']['value'].toString() : null,
+      isFilter: map['isFilter'],
+      isDropdown: map['isDropdown'],
+      dropdownOptions: map['dropdown_values'] != null ? List<String>.from(map['dropdown_values']?.map((d) => d['value'].toString())) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
     );
