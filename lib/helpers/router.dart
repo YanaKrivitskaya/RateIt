@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
+import 'package:rateit/views/home/home.page.dart';
 
 import '../views/auth/otp/otp_verification_view.dart';
-import '../views/temp.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -15,14 +15,13 @@ class RouteGenerator {
 
     switch (settings.name) {
       case homeRoute:
-        return MaterialPageRoute(builder: (_) => Temp());
+        return MaterialPageRoute(builder: (_) => HomePage());
       case otpVerificationRoute:
         {
           if (args is String) {
             return MaterialPageRoute(
               builder: (_) => BlocProvider<OtpCubit>(
-                create: (context) => OtpCubit()
-                /*..add(OtpSent(args))*/,
+                create: (context) => OtpCubit(),
                 child: OtpVerificationView(args),
               ),
             );

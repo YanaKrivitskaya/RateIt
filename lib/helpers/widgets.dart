@@ -6,7 +6,7 @@ import 'colors.dart';
 
 Widget loadingWidget(Color color) => Center(
   child: CircularProgressIndicator(
-      valueColor: new AlwaysStoppedAnimation<Color>(color)
+      valueColor: AlwaysStoppedAnimation<Color>(color)
   ),
 );
 

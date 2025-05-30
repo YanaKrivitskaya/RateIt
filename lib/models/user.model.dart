@@ -35,12 +35,12 @@ class User{
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] as int,
-      name: map['username'] as String,
-      email: map['email'] as String,
+      id: map['id'],
+      name: map['username'],
+      email: map['email'],
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
-      disabled: map['disabled'] as bool,
+      disabled: map['disabled'],
       disabledDate: map['disabledDate']!= null ? DateTime.parse(map['disabledDate']) : null,
     );
   }

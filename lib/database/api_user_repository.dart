@@ -46,10 +46,11 @@ class ApiUserRepository{
     }
   }
 
-  Future<User> getUser(int userId) async{
-    final response = await apiService.getSecure('${authUrl}/users/${userId.toString()}');
+  Future<User> getUser() async{
+    final response = await apiService.getSecure('${authUrl}profile');
+
     try{
-      return User.fromMap(response);
+      return User.fromMap(response["user"]);
     }
     catch(e) {
       throw BadRequestException(e.toString());
