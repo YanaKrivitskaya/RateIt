@@ -17,7 +17,8 @@ final double width90 = 90.w;
 final double sizerHeight = 15.h;
 final double formPaddingHeight = 5.h;
 final double scrollViewHeightXs = 15.h;
-final double scrollViewHeightSm = 30.h;
+final double height20 = 20.h;
+final double height30 = 30.h;
 final double scrollViewHeightMd = 35.h;
 final double scrollViewHeightLg = 60.h;
 

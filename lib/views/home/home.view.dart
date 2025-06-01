@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
+import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/views/profile/cubit/profile_cubit.dart';
 
 import 'cubit/home_cubit.dart';
@@ -45,9 +46,69 @@ class _HomeViewState extends State<HomeView> {
                 tooltip: 'Add new collection',
                 backgroundColor: ColorsPalette.algalFuel,
                 child: Icon(Icons.add, color: ColorsPalette.white),
-            ));
-              }
-            }
-        );
+            ),
+              body: BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state){
+                  if(state is HomeInitial || state is HomeStateLoading){
+                    return loadingWidget(ColorsPalette.algalFuel);
+                  }else if(state is HomeStateSuccess && state.collections.isNotEmpty){
+                    var collections = state.collections;
+                    return Column(children: [
+                      Center(child: Text("Your collections", style: appTextStyle(fontSize: smallHeaderFontSize),)),
+                      SingleChildScrollView(
+                      child: Column(children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: collections.length,
+                          itemBuilder: (context, position){
+                            final collection = collections[position];
+                            return  Container(
+                                margin: EdgeInsets.all(borderPadding),
+                                //width: width60,
+                                height: height30,
+                                child: InkWell(
+                                    child: collectionListItem(collection, context),
+                                    onTap: (){
+                                      /*TripDetailsArguments args = new TripDetailsArguments(isRoot: true, tripId: trip.id!);
+                                      Navigator.pushNamed(context, tripDetailsRoute, arguments: args).then((value) => {
+                                        context.read<TripsBloc>().add(GetAllTrips())
+                                      });*/
+                                    }
+                                )
+                            );},
+                        )]),
+                    )]);
+                  } else {
+                    return Column(children: [
+
+                    ],);
+                  }
+              }));
+          }
+        });
   }
+
+  Widget collectionListItem(Collection collection, BuildContext context) => Stack(
+      alignment: AlignmentDirectional.bottomCenter,
+      children: [
+        Container(
+            padding: EdgeInsets.only(bottom: imageCoverPadding),
+            child: collection.attachment != null ? Image.memory(collection.attachment!.source!) : Image.asset("assets/default_collection.jpg")
+        ),
+        Positioned(
+            bottom: 0,
+            child: Material(
+                elevation: 10.0,
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color:  ColorsPalette.white
+                ,
+                child: Container(
+                    margin: EdgeInsets.all(sizerHeightMd),
+                    width: width60,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.center ,children: [
+                      Text(collection.name!, style: appTextStyle(fontSize: accentFontSize, weight: FontWeight.bold))
+                    ]))))
+      ]
+  );
 }
