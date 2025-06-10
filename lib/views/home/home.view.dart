@@ -80,7 +80,10 @@ class _HomeViewState extends State<HomeView> {
                         )]),
                     )]);
                   } else {
-                    return Column(children: [
+                    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        Text("You have no collections. \nClick the '+' button to add one!")
+                      ],),
 
                     ],);
                   }
