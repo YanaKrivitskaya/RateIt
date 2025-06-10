@@ -7,7 +7,7 @@ import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/services/api.service.dart';
 import 'package:rateit/views/auth/cubit/auth_cubit.dart';
 import 'package:rateit/views/auth/login/login_page.dart';
-import 'package:rateit/views/temp.dart';
+import 'package:rateit/views/home/home.page.dart';
 import 'package:sizer/sizer.dart';
 
 import 'helpers/router.dart';
@@ -38,7 +38,10 @@ class RateItApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: ColorsPalette.flirtatious,
           scaffoldBackgroundColor: ColorsPalette.white,
-          textTheme: GoogleFonts.playpenSansTextTheme(Theme.of(context).textTheme),
+          textTheme: GoogleFonts.playpenSansTextTheme(Theme.of(context).textTheme).apply(
+            fontSizeFactor: 1.1,
+            fontSizeDelta: 2.0
+          ),
           colorScheme: ColorScheme.fromSwatch().copyWith(
               secondary: ColorsPalette.turquoiseTopaz,
               outline: ColorsPalette.boyzone
@@ -53,11 +56,10 @@ class RateItApp extends StatelessWidget {
               ),
             );}
             if (state is Unauthenticated) return LoginPage();
-            if (state is Authenticated) return Temp();
+            if (state is Authenticated) return HomePage();
             return SizedBox(height:0);
           }            
         ),
-        //home: const LoginPage(),
         onGenerateRoute: RouteGenerator.generateRoute,
       );
     });

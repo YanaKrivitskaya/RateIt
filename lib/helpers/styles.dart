@@ -17,7 +17,8 @@ final double width90 = 90.w;
 final double sizerHeight = 15.h;
 final double formPaddingHeight = 5.h;
 final double scrollViewHeightXs = 15.h;
-final double scrollViewHeightSm = 30.h;
+final double height20 = 20.h;
+final double height30 = 30.h;
 final double scrollViewHeightMd = 35.h;
 final double scrollViewHeightLg = 60.h;
 
@@ -40,7 +41,7 @@ final double imageCoverPadding = 2.5.h;
 //ANCHOR Font Size
 final double headerFontSize = 25.sp; // View headers
 final double smallHeaderFontSize = 20.sp; // View headers
-final double accentFontSize = 16.sp; // Form headers
+final double accentFontSize = 18.sp; // Form headers
 final double fontSize = 14.sp; // Form fields
 final double fontSizesm = 12.sp;
 final double fontSizexs = 10.sp;
