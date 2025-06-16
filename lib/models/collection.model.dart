@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class Collection{
   final String? description;
   final IconData? icon;
   final Color? color;
-  final Attachment? attachment;
+  final Uint8List? imageSrc;
   final List<CollectionProperty>? properties;
   final List<CollectionItem>? items;
   final DateTime? createdDate;
@@ -25,7 +26,7 @@ class Collection{
     this.description,
     this.icon,
     this.color,
-    this.attachment,
+    this.imageSrc,
     this.properties,
     this.items,
     this.createdDate,
@@ -51,7 +52,7 @@ class Collection{
       description: map['description'],
       icon: map['icon'] != null ? IconData(map['icon'], fontFamily: 'MaterialIcons') : null,
       color: map['color'] != null ? Color(map['color']) : null,
-      attachment: map['attachments'] != null ? Attachment.fromMap(map['attachments']) : null,
+      imageSrc: map['imageSrc'] != null ? Uint8List.fromList(map['imageSrc']['data'].cast<int>()) : null,
       properties: map['properties'] != null ? List<CollectionProperty>.from(map['properties']?.map((x) => CollectionProperty.fromMap(x))) : null,
       items: map['items'] != null ? List<CollectionItem>.from(map['items']?.map((x) => CollectionItem.fromMap(x))) : null,
       createdDate: DateTime.parse(map['createdDate']),

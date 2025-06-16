@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rateit/helpers/colors.dart';
+import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/models/collection.model.dart';
@@ -41,7 +42,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  //Navigator.pushNamed(context, tripStartPlanningRoute).then((value) => context.read<TripsBloc>().add(GetAllTrips()));
+                  Navigator.pushNamed(context, createCollectionRoute);
                 },
                 tooltip: 'Add new collection',
                 backgroundColor: ColorsPalette.algalFuel,
@@ -96,8 +97,19 @@ class _HomeViewState extends State<HomeView> {
       alignment: AlignmentDirectional.bottomCenter,
       children: [
         Container(
-            padding: EdgeInsets.only(bottom: imageCoverPadding),
-            child: collection.attachment != null ? Image.memory(collection.attachment!.source!) : Image.asset("assets/default_collection.jpg")
+          padding: EdgeInsets.only(bottom: imageCoverPadding),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0), // Adjust for rounded corners
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                collection.color ?? ColorsPalette.boyzone, // Start color
+                ColorsPalette.algalFuel
+              ],
+            ),
+          ),
+          child: collection.imageSrc != null ? Image.memory(collection.imageSrc!) : Container()
         ),
         Positioned(
             bottom: 0,
