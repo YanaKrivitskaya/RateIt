@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
-import 'package:rateit/views/collection/create_collection_view.dart';
+import 'package:rateit/views/collection/collection_edit/collection_edit_cubit.dart';
+import 'package:rateit/views/collection/collection_edit/collection_edit_view.dart';
 import 'package:rateit/views/home/home.page.dart';
 
 import '../views/auth/otp/otp_verification_view.dart';
@@ -30,7 +31,12 @@ class RouteGenerator {
           return _errorRoute();
         }
       case createCollectionRoute:
-        return MaterialPageRoute(builder: (_) => CreateCollectionView());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<CollectionEditCubit>(
+            create: (context) => CollectionEditCubit()..initCollection(),
+            child: CollectionEditView(),
+          ),
+        );
       default:
         return _errorRoute();
     }

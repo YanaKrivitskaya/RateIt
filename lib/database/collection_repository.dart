@@ -39,4 +39,14 @@ class CollectionRepository {
         CollectionProperty.fromMap(map)).toList();
     return properties;
   }
+
+  Future<Collection?> createCollection(Collection collection) async{
+    print("createCollection");
+
+    final response = await apiService.postSecure(baseUrl, collection.toJson());
+
+    var collectionResponse = response["collection"] != null ?
+    Collection.fromMap(response['collection']) : null;
+    return collectionResponse;
+  }
 }

@@ -47,6 +47,7 @@ dependencies:
   otp_timer_button: ^1.1.1
   flutter_form_builder: ^10.0.1
   form_builder_validators: ^11.1.2
+  flutter_iconpicker: ^4.0.1
 
 dev_dependencies:
   flutter_test:
