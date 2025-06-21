@@ -7,6 +7,9 @@ final double fullWidth = 100.w;
 final double fullHeight = 100.h;
 
 //ANCHOR Width
+final double width10 = 10.w;
+final double width20 = 20.w;
+final double width30 = 30.w;
 final double width40 = 40.w;
 final double width60 = 60.w;
 final double width70 = 70.w;
@@ -45,6 +48,8 @@ final double accentFontSize = 18.sp; // Form headers
 final double fontSize = 14.sp; // Form fields
 final double fontSizesm = 12.sp;
 final double fontSizexs = 10.sp;
+
+final double iconSize = 10.w;
 
 TextStyle headerTextStyle({Color? color, double? fontSize, FontWeight? weight, TextDecoration? decoration}) =>
     GoogleFonts.playpenSans(textStyle: TextStyle(
