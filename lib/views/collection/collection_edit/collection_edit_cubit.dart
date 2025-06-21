@@ -29,6 +29,12 @@ class CollectionEditCubit extends Cubit<CollectionEditState> {
     emit(CollectionEditSuccess(collection));
   }
 
+  void loadCollection(Collection collection){
+    emit(CollectionEditInitial());
+
+    emit(CollectionEditSuccess(collection));
+  }
+
   void setIcon(IconData icon, Collection collection){
     emit(CollectionEditLoading(collection));
 
@@ -40,8 +46,14 @@ class CollectionEditCubit extends Cubit<CollectionEditState> {
     emit(CollectionEditLoading(collection));
 
     try{
-      print(collection.toString());
-      Collection? newCollection = await _collectionRepository.createCollection(collection);
+      Collection? newCollection;
+
+      if(collection.id != null){
+        newCollection = await _collectionRepository.updateCollection(collection);
+      }else{
+        newCollection = await _collectionRepository.createCollection(collection);
+      }
+
       emit(CollectionEditCreated(newCollection));
     }catch(e){
       return emit(CollectionEditError(e.toString(), collection));

@@ -49,4 +49,14 @@ class CollectionRepository {
     Collection.fromMap(response['collection']) : null;
     return collectionResponse;
   }
+
+  Future<Collection?> updateCollection(Collection collection) async{
+    print("updateCollection");
+
+    final response = await apiService.putSecure(baseUrl, collection.toJson());
+
+    var collectionResponse = response["collection"] != null ?
+    Collection.fromMap(response['collection']) : null;
+    return collectionResponse;
+  }
 }

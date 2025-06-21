@@ -1,4 +1,5 @@
 const String homeRoute = '/home';
 const String loginRoute = '/login';
 const String otpVerificationRoute = '/otpVerification';
-const String createCollectionRoute = '/createCollection';
+const String editCollectionRoute = '/createCollection';
+const String viewCollectionRoute = '/viewCollection';

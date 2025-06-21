@@ -42,7 +42,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, createCollectionRoute);
+                  Navigator.pushNamed(context, editCollectionRoute);
                 },
                 tooltip: 'Add new collection',
                 backgroundColor: ColorsPalette.algalFuel,
@@ -69,7 +69,13 @@ class _HomeViewState extends State<HomeView> {
                                       scrollDirection: Axis.vertical,
                                       physics: NeverScrollableScrollPhysics(),
                                       children: List.generate(collections.length,(i){
-                                        return collectionListItem(collections[i], context);
+                                        return InkWell(
+                                          child: collectionListItem(collections[i], context),
+                                          onTap: () {
+                                            Navigator.pushNamed(context, viewCollectionRoute, arguments: collections[i].id);
+                                         }
+                                        );
+                                        //return collectionListItem(collections[i], context);
                                       })
                                   )
                                 ])

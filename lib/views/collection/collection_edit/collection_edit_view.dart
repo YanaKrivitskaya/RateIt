@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -7,7 +5,6 @@ import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:rateit/helpers/colors.dart';
-import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
@@ -45,7 +42,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('New collection'),
+        title: Text('Edit collection'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -86,6 +83,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
                       FormBuilderTextField(
                         name: "name",
                         maxLength: 50,
+                        initialValue: state.collection?.name ?? '',
                         decoration: const InputDecoration(labelText: 'Name'),
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required()
@@ -93,6 +91,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
                       ),
                       FormBuilderTextField(
                         name: "description",
+                        initialValue: state.collection?.description ?? '',
                         decoration: const InputDecoration(labelText: 'Description'),
                         maxLength: 250,
                         maxLines: 5,
@@ -148,7 +147,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
           context.read<CollectionEditCubit>().submitCollection(newCollection);
         }
       },
-      child: Text("Create")
+      child: collection.id != null ? Text("Save") : Text("Create")
   );
 
 }
