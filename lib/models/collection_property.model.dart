@@ -35,7 +35,6 @@ class CollectionProperty{
       'name': name,
       'type': type,
       'comment': comment,
-      //'value': value,
       'isFilter': isFilter,
       'isDropdown': isDropdown,
       'createdDate': createdDate?.microsecondsSinceEpoch,
@@ -61,4 +60,30 @@ class CollectionProperty{
   String toJson() => jsonEncode(toMap());
 
   factory CollectionProperty.fromJson(String source) => CollectionProperty.fromMap(jsonDecode(source));
+
+  CollectionProperty copyWith({
+    int? id,
+    String? name,
+    String? type,
+    String? comment,
+    String? value,
+    bool? isFilter,
+    bool? isDropdown,
+    List<String>? dropdownOptions,
+    DateTime? createdDate,
+    DateTime? updatedDate,
+  }) {
+    return CollectionProperty(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      comment: comment ?? this.comment,
+      value: value ?? this.value,
+      isFilter: isFilter ?? this.isFilter,
+      isDropdown: isDropdown ?? this.isDropdown,
+      dropdownOptions: dropdownOptions ?? this.dropdownOptions,
+      createdDate: createdDate ?? this.createdDate,
+      updatedDate: updatedDate ?? this.updatedDate,
+    );
+  }
 }

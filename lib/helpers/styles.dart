@@ -44,7 +44,8 @@ final double imageCoverPadding = 2.5.h;
 //ANCHOR Font Size
 final double headerFontSize = 25.sp; // View headers
 final double smallHeaderFontSize = 20.sp; // View headers
-final double accentFontSize = 18.sp; // Form headers
+final double accentFontSize = 18.sp; // F
+final double fontSize16 = 16.sp; // orm headers
 final double fontSize = 14.sp; // Form fields
 final double fontSizesm = 12.sp;
 final double fontSizexs = 10.sp;

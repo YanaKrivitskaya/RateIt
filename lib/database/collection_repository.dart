@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:rateit/models/api_dropdown.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/services/api.service.dart';
@@ -58,5 +59,37 @@ class CollectionRepository {
     var collectionResponse = response["collection"] != null ?
     Collection.fromMap(response['collection']) : null;
     return collectionResponse;
+  }
+
+  Future<CollectionProperty?> createProperty(int collectionId, CollectionProperty property) async{
+    print("createProperty");
+
+    final response = await apiService.postSecure('$baseUrl$collectionId/properties', property.toJson());
+
+    var propertyResponse = response["property"] != null ?
+    CollectionProperty.fromMap(response['property']) : null;
+    return propertyResponse;
+  }
+
+  Future<CollectionProperty?> updateProperty(int collectionId, CollectionProperty property) async{
+    print("updateProperty");
+
+    final response = await apiService.putSecure('$baseUrl$collectionId/properties', property.toJson());
+
+    var propertyResponse = response["property"] != null ?
+    CollectionProperty.fromMap(response['property']) : null;
+    return propertyResponse;
+  }
+
+  Future<void> updateDropdownValues(int collectionId, int propertyId, List<String> values) async{
+    print("updateDropdownValues");
+    ApiDropdownModel model = ApiDropdownModel(propertyId, List.empty(growable: true));
+
+    values.forEach((value) {
+      model.data.add(ApiDropdownValue(propertyId, value));
+    });
+
+    final response = await apiService.postSecure('$baseUrl$collectionId/properties/dropdown', model.toJson());
+    print(response.toString());
   }
 }

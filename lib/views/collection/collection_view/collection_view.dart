@@ -45,7 +45,7 @@ class _CollectionViewState extends State<CollectionView> {
                             icon: Icon(Icons.settings),
                             onPressed: () {
                               if(collection != null){
-
+                                Navigator.pushNamed(context, viewPropertiesRoute, arguments: collection.id);
                               }
                               //Navigator.pop(context);
                             })
