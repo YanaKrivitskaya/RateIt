@@ -57,7 +57,8 @@ class _CollectionEditViewState extends State<CollectionEditView> {
               ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
           }
           if(state is CollectionEditSuccess){
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            globalScaffoldMessenger.currentState!
+                .hideCurrentSnackBar();
           }
           if(state is CollectionEditError){
             var duration = Duration(days: 1);
@@ -66,7 +67,9 @@ class _CollectionEditViewState extends State<CollectionEditView> {
               ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
           }
           if(state is CollectionEditCreated){
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            globalScaffoldMessenger.currentState!
+                .hideCurrentSnackBar();
+            Navigator.pop(context);
           }
         },
         child: BlocBuilder<CollectionEditCubit, CollectionEditState>(

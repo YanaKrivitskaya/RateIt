@@ -4,13 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rateit/helpers/route_constants.dart';
+import 'package:rateit/models/property_edit_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
+import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
 import 'package:rateit/views/collection/collection_edit/collection_edit_cubit.dart';
 import 'package:rateit/views/collection/collection_edit/collection_edit_view.dart';
 import 'package:rateit/views/collection/collection_view/collection_view.dart';
 import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
 import 'package:rateit/views/home/home.page.dart';
+import 'package:rateit/views/properties/properties_edit/properties_edit_view.dart';
+import 'package:rateit/views/properties/properties_edit/cubit/properties_edit_cubit.dart';
+import 'package:rateit/views/properties/properties_view/properties_view.dart';
+import 'package:rateit/views/properties/properties_view/properties_view_cubit.dart';
 
 import '../views/auth/otp/otp_verification_view.dart';
 
@@ -51,10 +57,28 @@ class RouteGenerator {
         if (args is int) {
         return MaterialPageRoute(
           builder: (_) => BlocProvider<CollectionViewCubit>(
-            create: (context) => CollectionViewCubit()..loadCollection(args),
+            create: (context) => CollectionViewCubit()..getCollection(args),
             child: CollectionView(),
           ),
         );}
+        return _errorRoute();
+      case viewPropertiesRoute:
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider<PropertiesViewCubit>(
+              create: (context) => PropertiesViewCubit()..getProperties(args),
+              child: PropertiesView(collectionId: args),
+            ),
+          );}
+        return _errorRoute();
+      case editPropertiesRoute:
+        if (args is PropertyEditArgs) {
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider<PropertiesEditCubit>(
+              create: (context) => PropertiesEditCubit()..loadProperty(args.property),
+              child: PropertiesEditView(collectionId: args.collectionId),
+            ),
+          );}
         return _errorRoute();
       default:
         return _errorRoute();

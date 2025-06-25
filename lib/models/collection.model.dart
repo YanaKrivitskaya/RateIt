@@ -90,6 +90,7 @@ class Collection{
       colorAccent: colorAccent ?? this.colorAccent,
       imageSrc: imageSrc ?? this.imageSrc,
       properties: properties ?? this.properties,
+
       items: items ?? this.items,
       createdDate: createdDate ?? this.createdDate,
       updatedDate: updatedDate ?? this.updatedDate,

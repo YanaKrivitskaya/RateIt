@@ -12,7 +12,7 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
       _collectionRepository = CollectionRepository(),
       super(CollectionViewInitial());
 
-  void loadCollection(int collectionId) async{
+  void getCollection(int collectionId) async{
     emit(CollectionViewInitial());
 
     try{
