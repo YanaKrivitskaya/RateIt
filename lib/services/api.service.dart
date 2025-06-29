@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:rateit/models/api_models/api_attachments.model.dart';
 import 'package:rateit/models/custom_exception.dart';
 import 'package:rateit/services/secure_storage.service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-//import 'package:image_cropper/image_cropper.dart';
+//import 'package:image_cropper/image_crop_view.dart';
 
 class ApiService {
   static ApiService? _instance;
@@ -242,7 +244,7 @@ class ApiService {
     return responseJson;
   }
 
-  Future<dynamic> postSecureMultipart(String url, String? body, List<int>? fileBytes, String filePath) async{
+  Future<dynamic> postSecureMultipart(String url, List<ApiAttachmentModel>? files) async{
     print("postSecureMultipart $url");
     dynamic responseJson;
 
@@ -252,8 +254,10 @@ class ApiService {
     request.headers["Authorization"] = "Bearer $_accessToken";
     request.headers["device-info"] = _deviceId ?? '';
 
-    if(fileBytes != null){
-      request.files.add(http.MultipartFile.fromBytes("file", fileBytes, filename: filePath));
+    if(files != null){
+      for(var file in files){
+        request.files.add(http.MultipartFile.fromBytes("files", file.source, filename: file.filename));
+      }
     }
 
     try{

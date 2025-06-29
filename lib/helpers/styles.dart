@@ -40,6 +40,7 @@ final double borderPaddingSm = 2.w;
 final double formBottomPadding = 4.h;
 final double formTopPadding = 20.h;
 final double imageCoverPadding = 2.5.h;
+final double popupPadding = 8.h;
 
 //ANCHOR Font Size
 final double headerFontSize = 25.sp; // View headers

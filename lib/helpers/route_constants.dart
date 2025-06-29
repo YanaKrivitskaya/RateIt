@@ -5,3 +5,5 @@ const String editCollectionRoute = '/createCollection';
 const String viewCollectionRoute = '/viewCollection';
 const String viewPropertiesRoute = '/viewProperties';
 const String editPropertiesRoute = '/editProperties';
+const String editItemRoute = '/editItem';
+const String imageCropRoute = '/imageCropView';

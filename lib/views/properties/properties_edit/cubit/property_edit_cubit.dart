@@ -3,33 +3,33 @@ import 'package:meta/meta.dart';
 import 'package:rateit/database/collection_repository.dart';
 import 'package:rateit/models/collection_property.model.dart';
 
-part 'properties_edit_state.dart';
+part 'property_edit_state.dart';
 
-class PropertiesEditCubit extends Cubit<PropertiesEditState> {
+class PropertyEditCubit extends Cubit<PropertyEditState> {
   final CollectionRepository _collectionRepository;
 
-  PropertiesEditCubit() :
+  PropertyEditCubit() :
         _collectionRepository = CollectionRepository(),
-        super(PropertiesEditInitial());
+        super(PropertyEditInitial());
 
   void loadProperty(CollectionProperty? property){
-    emit(PropertiesEditInitial());
+    emit(PropertyEditInitial());
 
     if(property == null){
       CollectionProperty newProp = CollectionProperty(dropdownOptions: List.empty(growable: true));
-      emit(PropertiesEditSuccess(newProp, false));
+      emit(PropertyEditSuccess(newProp, false));
     }else{
-      emit(PropertiesEditSuccess(property, property.isDropdown ?? false));
+      emit(PropertyEditSuccess(property, property.isDropdown ?? false));
     }
   }
 
   void toggleDropdown(bool value){
     CollectionProperty property = state.property!.copyWith(isDropdown: value);
-    emit(PropertiesEditSuccess(property, property.isDropdown ?? false));
+    emit(PropertyEditSuccess(property, property.isDropdown ?? false));
   }
 
   void updateDropdownValues(int? index, String value, bool delete){
-    emit(PropertiesEditLoading(state.property));
+    emit(PropertyEditLoading(state.property));
 
     CollectionProperty property = state.property!;
     List<String> values = property.dropdownOptions ?? List.empty(growable: true);
@@ -44,11 +44,11 @@ class PropertiesEditCubit extends Cubit<PropertiesEditState> {
       values.add(value);
     }
     property.copyWith(dropdownOptions: values);
-    emit(PropertiesEditSuccess(property, property.isDropdown ?? false));
+    emit(PropertyEditSuccess(property, property.isDropdown ?? false));
   }
 
   void submitProperty(int collectionId, CollectionProperty property) async{
-    emit(PropertiesEditLoading(property));
+    emit(PropertyEditLoading(property));
 
     try{
       CollectionProperty? newProperty;
@@ -62,9 +62,9 @@ class PropertiesEditCubit extends Cubit<PropertiesEditState> {
         await _collectionRepository.updateDropdownValues(collectionId, newProperty!.id!, property.isDropdown! ? property.dropdownOptions ?? List.empty() : List.empty());
       }
 
-      emit(PropertiesEditCreated(newProperty));
+      emit(PropertyEditCreated(newProperty));
     }catch(e){
-      return emit(PropertiesEditError(e.toString(), property));
+      return emit(PropertyEditError(e.toString(), property));
     }
   }
 }

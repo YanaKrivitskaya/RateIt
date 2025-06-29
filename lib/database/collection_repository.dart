@@ -1,6 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:rateit/models/api_dropdown.model.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
+import 'package:rateit/models/api_models/api_attachments.model.dart';
+import 'package:rateit/models/api_models/api_dropdown.model.dart';
+import 'package:rateit/models/api_models/api_values.model.dart';
+import 'package:rateit/models/attachment.model.dart';
 import 'package:rateit/models/collection.model.dart';
+import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/services/api.service.dart';
 
@@ -85,11 +90,52 @@ class CollectionRepository {
     print("updateDropdownValues");
     ApiDropdownModel model = ApiDropdownModel(propertyId, List.empty(growable: true));
 
-    values.forEach((value) {
+    for (var value in values) {
       model.data.add(ApiDropdownValue(propertyId, value));
-    });
+    }
 
     final response = await apiService.postSecure('$baseUrl$collectionId/properties/dropdown', model.toJson());
     print(response.toString());
+  }
+
+  Future<CollectionItem?> createItem(int collectionId, CollectionItem item) async{
+    print("createItem");
+
+    final response = await apiService.postSecure("$baseUrl$collectionId/items", item.toJson());
+
+    var itemResponse = response["item"] != null ?
+    CollectionItem.fromMap(response['item']) : null;
+    return itemResponse;
+  }
+
+  Future<CollectionItem?> updatePropertyValues(int collectionId, int itemId, List<CollectionProperty> properties) async{
+    print("updatePropertyValues");
+    ApiPropertyValueModel model = ApiPropertyValueModel(itemId, List.empty(growable: true));
+
+    for (var prop in properties) {
+      model.data.add(ApiPropertyValue(itemId, prop.id!, prop.value!));
+    }
+
+    final response = await apiService.postSecure('$baseUrl$collectionId/properties/values', model.toJson());
+
+    var itemResponse = response["item"] != null ?
+    CollectionItem.fromMap(response['item']) : null;
+    return itemResponse;
+  }
+
+  Future<List<Attachment>?> createAttachments(int collectionId, int itemId, List<XFile> attachments) async{
+    print("createAttachments");
+
+    List<ApiAttachmentModel> files = List.empty(growable: true);
+
+    for (var att in attachments) {
+      files.add(ApiAttachmentModel(await att.readAsBytes(), att.name));
+    }
+
+    final response = await apiService.postSecureMultipart('$baseUrl$collectionId/$itemId/attachments', files);
+
+    var attResponse = response["attachments"]?.map<Attachment>((map) =>
+        Attachment.fromMap(map)).toList();
+    return attResponse;
   }
 }
