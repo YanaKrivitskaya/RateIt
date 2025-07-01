@@ -12,6 +12,7 @@ import 'package:rateit/services/api.service.dart';
 class CollectionRepository {
   ApiService apiService = ApiService();
   String baseUrl = "collections/";
+  String attachmentsUrl = "attachments/";
 
   Future<List<Collection>?> getCollections() async{
     if (kDebugMode) {
@@ -132,10 +133,19 @@ class CollectionRepository {
       files.add(ApiAttachmentModel(await att.readAsBytes(), att.name));
     }
 
-    final response = await apiService.postSecureMultipart('$baseUrl$collectionId/$itemId/attachments', files);
+    final response = await apiService.postSecureMultipart('$attachmentsUrl$collectionId/$itemId', files);
 
     var attResponse = response["attachments"]?.map<Attachment>((map) =>
         Attachment.fromMap(map)).toList();
     return attResponse;
+  }
+
+  Future<Uint8List?> getAttachmentById(int collectionId, id) async{
+    if (kDebugMode) {
+      print("getAttachmentById");
+    }
+    final response = await apiService.getSecure("$attachmentsUrl$collectionId/$id", isRaw: true);
+
+    return response.bodyBytes;
   }
 }

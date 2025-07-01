@@ -52,6 +52,7 @@ final double fontSizesm = 12.sp;
 final double fontSizexs = 10.sp;
 
 final double iconSize = 10.w;
+final double starSize = 8.w;
 
 TextStyle headerTextStyle({Color? color, double? fontSize, FontWeight? weight, TextDecoration? decoration}) =>
     GoogleFonts.playpenSans(textStyle: TextStyle(
