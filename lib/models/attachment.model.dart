@@ -8,6 +8,7 @@ class Attachment{
   final String? originalName;
   final String? path;
   Uint8List? source;
+  bool toDelete;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
@@ -16,6 +17,7 @@ class Attachment{
     this.originalName,
     this.path,
     this.source,
+    this.toDelete = false,
     this.createdDate,
     this.updatedDate,
   });

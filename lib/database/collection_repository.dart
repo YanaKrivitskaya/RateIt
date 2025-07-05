@@ -148,4 +148,22 @@ class CollectionRepository {
 
     return response.bodyBytes;
   }
+
+  Future<CollectionItem?> getItemById(int collectionId, int itemId) async{
+    if (kDebugMode) {
+      print("getItemById");
+    }
+    final response = await apiService.getSecure("$baseUrl$collectionId/items/$itemId");
+
+    var item = response["item"] != null ?
+    CollectionItem.fromMap(response["item"]) : null;
+    return item;
+  }
+
+  Future<void> deleteAttachment(int collectionId, id) async{
+    if (kDebugMode) {
+      print("deleteAttachment");
+    }
+    await apiService.deleteSecure("$attachmentsUrl$collectionId/$id");
+  }
 }

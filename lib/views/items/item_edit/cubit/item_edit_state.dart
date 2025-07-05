@@ -3,7 +3,7 @@ part of 'item_edit_cubit.dart';
 @immutable
 sealed class ItemEditState {
   final CollectionItem? item;
-  final List<XFile>? files;
+  final List<AttachmentViewModel>? files;
 
   const ItemEditState(this.item, this.files);
 
@@ -22,12 +22,12 @@ class ItemEditLoading extends ItemEditState{
 class ItemEditSuccess extends ItemEditState{
   final CollectionItem item;
 
-  const ItemEditSuccess(this.item,final List<XFile>? files): super(item, files);
+  const ItemEditSuccess(this.item,final List<AttachmentViewModel>? files): super(item, files);
 }
 
 class ItemEditCreated extends ItemEditState{
   final CollectionItem item;
-  final List<XFile>? files;
+  final List<AttachmentViewModel>? files;
 
   const ItemEditCreated(this.item, this.files): super(item, files);
 }

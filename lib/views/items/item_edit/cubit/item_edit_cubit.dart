@@ -7,9 +7,9 @@ import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:meta/meta.dart';
 import 'package:rateit/database/collection_repository.dart';
-import 'package:rateit/models/attachment.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/view_models/attachment_view.model.dart';
 
 part 'item_edit_state.dart';
 
@@ -22,16 +22,22 @@ class ItemEditCubit extends Cubit<ItemEditState> {
   void loadItem(int collectionId, CollectionItem? item) async{
     emit(ItemEditInitial());
 
-    List<XFile> files = List.empty(growable: true);
+    List<AttachmentViewModel> files = List.empty(growable: true);
 
     if(item == null){
       List<CollectionProperty>? properties = await _collectionRepository.getCollectionProperties(collectionId);
       CollectionItem newItem = CollectionItem(properties: properties);
       emit(ItemEditSuccess(newItem, files));
     }else{
-      if(item.attachments.isNotNullOrEmpty){
+      if(item.attachments != null){
         for(var att in item.attachments!){
-          files.add(XFile.fromData(att.source!));
+          //var index = item.attachments!.indexOf(att);
+          Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
+          //att.source = imageSource;
+          if(imageSource != null){
+            files.add(AttachmentViewModel(id: att.id!, source: imageSource, state: AttState.keep));
+          }
+          //item.attachments![index] = att;
         }
       }
 
@@ -45,16 +51,21 @@ class ItemEditCubit extends Cubit<ItemEditState> {
 
   void addImage(CroppedFile file){
     emit(ItemEditLoading(state.item, state.files));
-    List<XFile> files = state.files!;
-    files.add(XFile(file.path));
+    List<AttachmentViewModel> files = state.files!;
+    files.add(AttachmentViewModel(id: null, file: XFile(file.path), state: AttState.create));
     emit(ItemEditSuccess(state.item!, files));
   }
 
 
   void removeImage(int index){
     emit(ItemEditLoading(state.item, state.files));
-    List<XFile> files = state.files!;
-    files.removeAt(index);
+    List<AttachmentViewModel> files = state.files!;
+    if(files[index].id != null){
+      files[index].state = AttState.delete;
+    }else{
+
+      files.removeAt(index);
+    }
     emit(ItemEditSuccess(state.item!, files));
   }
 
@@ -68,7 +79,19 @@ class ItemEditCubit extends Cubit<ItemEditState> {
           await _collectionRepository.updatePropertyValues(collectionId, newItem.id!, item.properties!);
         }
         if(state.files.isNotNullOrEmpty){
-          await _collectionRepository.createAttachments(collectionId, newItem.id!, state.files!);
+          List<XFile> newFiles = List.empty(growable: true);
+
+          for(var att in state.files!){
+            if(att.state == AttState.create){
+              newFiles.add(att.file!);
+            }
+            if(att.state == AttState.delete){
+              await _collectionRepository.deleteAttachment(collectionId, att.id!);
+            }
+          }
+          if(newFiles.isNotEmpty){
+            await _collectionRepository.createAttachments(collectionId, newItem.id!, newFiles);
+          }
         }
         emit(ItemEditCreated(newItem, state.files));
       }

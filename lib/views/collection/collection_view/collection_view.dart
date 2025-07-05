@@ -9,7 +9,7 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/models/args_models/item_edit_args.model.dart';
+import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
 
@@ -88,82 +88,60 @@ class _CollectionViewState extends State<CollectionView> {
                   child: Column(children: [
                     Text(collection.description ?? ''),
                     collection.items.isNotNullOrEmpty ? SingleChildScrollView(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: collection.items!.length,
-                          itemBuilder: (context, position){
-                            final CollectionItem item = collection.items![position];
-                            final att = item.attachments?.firstOrNull;
-                            return Card(
-                              child: InkWell(
-                                onTap: (){
-                                  //Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: property));
-                                },
-                                child: Container(
-                                  height: width30,
-                                  child: Row(children: [
-                                    Container(
-                                        width: width30,
-                                        child: att?.source != null ? SizedBox(
-                                          height: width30,
-                                          child: Image.memory(att!.source!),
-                                        ) : Card(
-                                          color: ColorsPalette.blueGrey,
-                                          child: SizedBox(
-                                            width: width30,
-                                            height: width30,
-                                            child: Icon(Icons.image, color: Colors.white, size: iconSize),
-                                          ),
-                                        )
-                                    ),
-                                    Expanded(child: Container(
-                                      margin: EdgeInsets.symmetric(horizontal: borderPadding),
-                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
-                                        Text(item.name!, style: appTextStyle(fontSize: accentFontSize), overflow: TextOverflow.ellipsis,),
-                                        Flex(direction: Axis.horizontal, mainAxisSize: MainAxisSize.min, children: [RatingBarIndicator(
-                                          rating: item.rating ?? 0,
-                                          itemBuilder: (context, index) => Icon(
-                                            Icons.star,
-                                            color: ColorsPalette.flirtatious,
-                                          ),
-                                          itemCount: 5,
-                                          itemSize: starSize,
-                                          direction: Axis.horizontal,
-                                        )])
-                                      ],),
-                                    )),
-                                  ]),
-                                )
-                                /*child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                                  att?.source != null ? SizedBox(
-                                    height: width30,
-                                    child: Image.memory(att!.source!),
-                                  ) : Card(
-                                    color: ColorsPalette.blueGrey,
-                                    child: SizedBox(
-                                      width: width30,
+                        child: Container(constraints: BoxConstraints(
+                          maxHeight: scrollViewHeightLg,
+                        ), child:
+                          ListView.builder(
+                            shrinkWrap: true,
+                            //physics: NeverScrollableScrollPhysics(),
+                            itemCount: collection.items!.length,
+                            itemBuilder: (context, position){
+                              final CollectionItem item = collection.items![position];
+                              final att = item.attachments?.firstOrNull;
+                              return Card(
+                                child: InkWell(
+                                    onTap: (){
+                                      Navigator.pushNamed(context, viewItemRoute, arguments: ItemViewArgs(collectionId: collection.id!, itemId: item.id!));
+                                    },
+                                    child: Container(
                                       height: width30,
-                                      child: Icon(Icons.image, color: Colors.white, size: iconSize),
-                                    ),
-                                  ),
-                                  Column(children: [
-                                    Text(item.name!, style: appTextStyle(fontSize: accentFontSize), overflow: TextOverflow.ellipsis,),
-                                    Flex(direction: Axis.horizontal, mainAxisSize: MainAxisSize.min, children: [RatingBarIndicator(
-                                      rating: item.rating ?? 0,
-                                      itemBuilder: (context, index) => Icon(
-                                        Icons.star,
-                                        color: ColorsPalette.flirtatious,
-                                      ),
-                                      itemCount: 5,
-                                      itemSize: starSize,
-                                      direction: Axis.horizontal,
-                                    )]),
-                                  ],)
-                                ],),*/
-                              ),
-                            );
-                          },
+                                      child: Row(children: [
+                                        Container(
+                                            width: width30,
+                                            child: att?.source != null ? SizedBox(
+                                              height: width30,
+                                              child: Image.memory(att!.source!),
+                                            ) : Card(
+                                              color: ColorsPalette.blueGrey,
+                                              child: SizedBox(
+                                                width: width30,
+                                                height: width30,
+                                                child: Icon(Icons.image, color: Colors.white, size: iconSize),
+                                              ),
+                                            )
+                                        ),
+                                        Expanded(child: Container(
+                                          margin: EdgeInsets.symmetric(horizontal: borderPadding),
+                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
+                                            Text(item.name!, style: appTextStyle(fontSize: accentFontSize), overflow: TextOverflow.ellipsis,),
+                                            Flex(direction: Axis.horizontal, mainAxisSize: MainAxisSize.min, children: [RatingBarIndicator(
+                                              rating: item.rating ?? 0,
+                                              itemBuilder: (context, index) => Icon(
+                                                Icons.star,
+                                                color: ColorsPalette.flirtatious,
+                                              ),
+                                              itemCount: 5,
+                                              itemSize: starSize,
+                                              direction: Axis.horizontal,
+                                            )])
+                                          ],),
+                                        )),
+                                      ]),
+                                    )
+                                ),
+                              );
+                            },
+                          )
                         )
                     ) : Center(child: Text('No items')),
                   ],),

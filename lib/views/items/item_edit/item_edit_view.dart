@@ -19,6 +19,7 @@ import 'package:rateit/main.dart';
 import 'package:rateit/models/attachment.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/view_models/attachment_view.model.dart';
 import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
 import 'package:rateit/views/items/item_edit/image_crop_view.dart';
 
@@ -111,10 +112,12 @@ class _ItemEditViewState extends State<ItemEditView> {
                               scrollDirection: Axis.horizontal,
                               children:[
                                 ...List.generate(state.files!.length, (int index) {
-                                  XFile file = state.files![index];
-                                  return Stack(
+                                  AttachmentViewModel att = state.files![index];
+                                  if(att.state == AttState.delete) {
+                                    return SizedBox();
+                                  } else {return Stack(
                                     children: [
-                                      Image.file(File(file.path)),
+                                      att.id != null ? Image.memory(att.source!) : Image.file(File(att.file!.path)),
                                       PositionedDirectional(
                                           top: 0,
                                           end: 0,
@@ -140,10 +143,10 @@ class _ItemEditViewState extends State<ItemEditView> {
                                             ),
                                           ))
                                     ],
-                                  );
+                                  );}
 
                                 }),
-                                (state.files!.length < maxImages) ? InkWell(
+                                (state.files!.where((f)=> f.state != AttState.delete).length < maxImages) ? InkWell(
                                   child: Card(
                                     color: ColorsPalette.blueGrey,
                                     child: SizedBox(
