@@ -4,7 +4,7 @@ import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
-import 'package:rateit/models/property_edit_args.model.dart';
+import 'package:rateit/models/args_models/property_edit_args.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/properties/properties_view/properties_view_cubit.dart';
 

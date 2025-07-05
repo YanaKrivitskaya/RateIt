@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:rateit/models/api_models/api_attachments.model.dart';
 import 'package:rateit/models/custom_exception.dart';
 import 'package:rateit/services/secure_storage.service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-//import 'package:image_cropper/image_cropper.dart';
+//import 'package:image_cropper/image_crop_view.dart';
 
 class ApiService {
   static ApiService? _instance;
@@ -171,7 +173,7 @@ class ApiService {
     return responseJson;
   }
 
-  Future<dynamic> getSecure(String url, {Map<String, dynamic>? queryParams}) async{
+  Future<dynamic> getSecure(String url, {Map<String, dynamic>? queryParams, bool isRaw = false}) async{
     print("getSecure $url");
     dynamic responseJson;
 
@@ -180,11 +182,13 @@ class ApiService {
     Uri uri = Uri.parse('$_baseUrl$url?$queryString');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $_accessToken",
-      "device-info": _deviceId ?? ''
+      "device-info": _deviceId ?? '',
+      "Connection": "Keep-Alive",
+      "Keep-Alive": "timeout=20, max=1"
     };
 
     try{
-      responseJson = await sendGet(uri, headers);
+      responseJson = await sendGet(uri, headers, isRaw: isRaw);
     }on SocketException catch(e) {
       throw ConnectionException('No Internet connection (${e.message})');
     }on UnauthorizedException {
@@ -242,7 +246,7 @@ class ApiService {
     return responseJson;
   }
 
-  Future<dynamic> postSecureMultipart(String url, String? body, List<int>? fileBytes, String filePath) async{
+  Future<dynamic> postSecureMultipart(String url, List<ApiAttachmentModel>? files) async{
     print("postSecureMultipart $url");
     dynamic responseJson;
 
@@ -252,8 +256,10 @@ class ApiService {
     request.headers["Authorization"] = "Bearer $_accessToken";
     request.headers["device-info"] = _deviceId ?? '';
 
-    if(fileBytes != null){
-      request.files.add(http.MultipartFile.fromBytes("file", fileBytes, filename: filePath));
+    if(files != null){
+      for(var file in files){
+        request.files.add(http.MultipartFile.fromBytes("files", file.source, filename: file.filename));
+      }
     }
 
     try{
@@ -323,9 +329,11 @@ class ApiService {
     return responseJson;
   }
 
-  Future<dynamic> sendGet(Uri uri, Map<String, String>? headers) async{
-    var response = await http.get(uri, headers: headers);
-    return await _response(response);
+  Future<dynamic> sendGet(Uri uri, Map<String, String>? headers, {bool isRaw = false}) async{
+    var response = await http.get(uri, headers: headers).timeout(
+      const Duration(seconds: 15),
+    );
+    return await _response(response, isRaw: isRaw);
   }
 
   Future<dynamic> sendPost(Uri uri, Map<String, String> headers, String? body) async{
@@ -343,7 +351,7 @@ class ApiService {
     return await _response(response);
   }
 
-  dynamic _response(http.Response response) async{
+  dynamic _response(http.Response response, {bool isRaw = false}) async{
     if(response.headers["set-cookie"] != null){
       var refreshToken = response.headers["set-cookie"].toString().split(';')[0].substring(13);
       await _storage!.write(key: "refresh_token", value: refreshToken);
@@ -356,8 +364,12 @@ class ApiService {
 
     switch(response.statusCode){
       case 200: {
-        Map<String, dynamic>? data = json.decode(response.body.toString());
-        return data;
+        if(isRaw) {
+          return response;
+        } else{
+          Map<String, dynamic>? data = json.decode(response.body.toString());
+          return data;
+        }
       }
       case 400:
         throw BadRequestException(errorMessage);

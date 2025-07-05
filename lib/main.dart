@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rateit/helpers/colors.dart';
@@ -31,6 +32,8 @@ class RateItApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    /*SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);*/
     return Sizer(builder: (context, orientation, deviceType) {
       return MaterialApp(
         scaffoldMessengerKey: globalScaffoldMessenger,

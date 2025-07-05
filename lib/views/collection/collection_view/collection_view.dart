@@ -1,11 +1,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_iconpicker/extensions/list_extensions.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
+import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
+import 'package:rateit/models/args_models/item_args.model.dart';
+import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
 
 class CollectionView extends StatefulWidget {
@@ -19,7 +24,24 @@ class _CollectionViewState extends State<CollectionView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CollectionViewCubit, CollectionViewState>(
-        listener: (context, state){},
+        listener: (context, state){
+          if(state is CollectionViewLoading){
+            var duration = Duration(days: 1);
+            globalScaffoldMessenger.currentState!
+              ..hideCurrentSnackBar()
+              ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
+          }
+          if(state is CollectionViewSuccess){
+            globalScaffoldMessenger.currentState!
+                .hideCurrentSnackBar();
+          }
+          if(state is CollectionViewError){
+            var duration = Duration(days: 1);
+            globalScaffoldMessenger.currentState!
+              ..hideCurrentSnackBar()
+              ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
+          }
+        },
         child: BlocBuilder<CollectionViewCubit, CollectionViewState>(
             builder: (context, state){
               Collection? collection = state.collection;
@@ -51,10 +73,77 @@ class _CollectionViewState extends State<CollectionView> {
                             })
                       ]
                   ),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () {
+                      if(collection != null){
+                        Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: collection.id!, item: null));
+                      }
+                    },
+                    tooltip: 'Add new item',
+                    backgroundColor: ColorsPalette.boyzone,
+                    child: Icon(Icons.add, color: ColorsPalette.white),
+                  ),
                 body: collection != null ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: borderPadding),
+                  padding: EdgeInsets.only(left: viewPadding, right: viewPadding, bottom: formBottomPadding),
                   child: Column(children: [
-                    Text(collection.description ?? '')
+                    Text(collection.description ?? ''),
+                    collection.items.isNotNullOrEmpty ? SingleChildScrollView(
+                        child: Container(constraints: BoxConstraints(
+                          maxHeight: scrollViewHeightLg,
+                        ), child:
+                          ListView.builder(
+                            shrinkWrap: true,
+                            //physics: NeverScrollableScrollPhysics(),
+                            itemCount: collection.items!.length,
+                            itemBuilder: (context, position){
+                              final CollectionItem item = collection.items![position];
+                              final att = item.attachments?.firstOrNull;
+                              return Card(
+                                child: InkWell(
+                                    onTap: (){
+                                      Navigator.pushNamed(context, viewItemRoute, arguments: ItemViewArgs(collectionId: collection.id!, itemId: item.id!));
+                                    },
+                                    child: Container(
+                                      height: width30,
+                                      child: Row(children: [
+                                        Container(
+                                            width: width30,
+                                            child: att?.source != null ? SizedBox(
+                                              height: width30,
+                                              child: Image.memory(att!.source!),
+                                            ) : Card(
+                                              color: ColorsPalette.blueGrey,
+                                              child: SizedBox(
+                                                width: width30,
+                                                height: width30,
+                                                child: Icon(Icons.image, color: Colors.white, size: iconSize),
+                                              ),
+                                            )
+                                        ),
+                                        Expanded(child: Container(
+                                          margin: EdgeInsets.symmetric(horizontal: borderPadding),
+                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
+                                            Text(item.name!, style: appTextStyle(fontSize: accentFontSize), overflow: TextOverflow.ellipsis,),
+                                            Flex(direction: Axis.horizontal, mainAxisSize: MainAxisSize.min, children: [RatingBarIndicator(
+                                              rating: item.rating ?? 0,
+                                              itemBuilder: (context, index) => Icon(
+                                                Icons.star,
+                                                color: ColorsPalette.flirtatious,
+                                              ),
+                                              itemCount: 5,
+                                              itemSize: starSize,
+                                              direction: Axis.horizontal,
+                                            )])
+                                          ],),
+                                        )),
+                                      ]),
+                                    )
+                                ),
+                              );
+                            },
+                          )
+                        )
+                    ) : Center(child: Text('No items')),
                   ],),
                 ) : loadingWidget(ColorsPalette.algalFuel)
               );

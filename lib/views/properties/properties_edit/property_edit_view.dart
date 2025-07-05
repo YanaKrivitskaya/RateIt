@@ -9,48 +9,48 @@ import 'package:rateit/main.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/properties/properties_edit/property_dropdown_dialog.dart';
 
-import 'cubit/properties_edit_cubit.dart';
+import 'cubit/property_edit_cubit.dart';
 
-class PropertiesEditView extends StatefulWidget {
+class PropertyEditView extends StatefulWidget {
   final int collectionId;
-  const PropertiesEditView({required this.collectionId, super.key});
+  const PropertyEditView({required this.collectionId, super.key});
 
   @override
-  _PropertiesEditViewState createState() => _PropertiesEditViewState();
+  _PropertyEditViewState createState() => _PropertyEditViewState();
 }
 
-class _PropertiesEditViewState extends State<PropertiesEditView> {
+class _PropertyEditViewState extends State<PropertyEditView> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   var typeOptions = ['Text', 'Number', 'Date'];
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PropertiesEditCubit, PropertiesEditState>(
+    return BlocListener<PropertyEditCubit, PropertyEditState>(
         listener: (context, state){
-          if(state is PropertiesEditLoading){
+          if(state is PropertyEditLoading){
             var duration = Duration(days: 1);
             globalScaffoldMessenger.currentState!
               ..hideCurrentSnackBar()
               ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
           }
-          if(state is PropertiesEditSuccess){
+          if(state is PropertyEditSuccess){
             globalScaffoldMessenger.currentState!
               .hideCurrentSnackBar();
           }
-          if(state is PropertiesEditError){
+          if(state is PropertyEditError){
             var duration = Duration(days: 1);
             globalScaffoldMessenger.currentState!
               ..hideCurrentSnackBar()
               ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
           }
-          if(state is PropertiesEditCreated){
+          if(state is PropertyEditCreated){
             globalScaffoldMessenger.currentState!
                 .hideCurrentSnackBar();
             Navigator.pop(context);
           }
         },
-        child: BlocBuilder<PropertiesEditCubit, PropertiesEditState>(
+        child: BlocBuilder<PropertyEditCubit, PropertyEditState>(
         builder: (context, state){
           CollectionProperty? property = state.property;
           return Scaffold(
@@ -77,7 +77,7 @@ class _PropertiesEditViewState extends State<PropertiesEditView> {
                               isFilter: _formKey.currentState?.fields['isFilter']?.value,
                               isDropdown: _formKey.currentState?.fields['isDropdown']?.value,
                             );
-                            context.read<PropertiesEditCubit>().submitProperty(widget.collectionId, newProperty);
+                            context.read<PropertyEditCubit>().submitProperty(widget.collectionId, newProperty);
                         }}
                         //Navigator.pop(context);
                       })
@@ -130,7 +130,7 @@ class _PropertiesEditViewState extends State<PropertiesEditView> {
                         name: 'isDropdown',
                         initialValue: property?.isDropdown ?? false,
                         onChanged: (value) {
-                          context.read<PropertiesEditCubit>().toggleDropdown(value!);
+                          context.read<PropertyEditCubit>().toggleDropdown(value!);
                         },
                         title: Text("Property is a dropdown", style: appTextStyle(fontSize: fontSize16),)
                     ),
@@ -153,7 +153,7 @@ class _PropertiesEditViewState extends State<PropertiesEditView> {
                                   PropertyDropdownDialog(propertyName: propertyName, value: '')
                               ).then((val) {
                                 if(val != null && val != ''){
-                                  context.read<PropertiesEditCubit>().updateDropdownValues(null, val, false);
+                                  context.read<PropertyEditCubit>().updateDropdownValues(null, val, false);
                                 }
                               });
                             },
@@ -176,9 +176,9 @@ class _PropertiesEditViewState extends State<PropertiesEditView> {
                                           PropertyDropdownDialog(propertyName: propertyName, value: option)
                                     ).then((val) {
                                       if(val != null){
-                                        context.read<PropertiesEditCubit>().updateDropdownValues(position, val, false);
+                                        context.read<PropertyEditCubit>().updateDropdownValues(position, val, false);
                                       }else{
-                                        context.read<PropertiesEditCubit>().updateDropdownValues(position, '', true);
+                                        context.read<PropertyEditCubit>().updateDropdownValues(position, '', true);
                                       }
                                     });
                                   },

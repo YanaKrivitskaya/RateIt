@@ -23,7 +23,7 @@ final double scrollViewHeightXs = 15.h;
 final double height20 = 20.h;
 final double height30 = 30.h;
 final double scrollViewHeightMd = 35.h;
-final double scrollViewHeightLg = 60.h;
+final double scrollViewHeightLg = 70.h;
 
 //ANCHOR Sizer
 final double sizerHeightsm = 1.h;
@@ -40,17 +40,20 @@ final double borderPaddingSm = 2.w;
 final double formBottomPadding = 4.h;
 final double formTopPadding = 20.h;
 final double imageCoverPadding = 2.5.h;
+final double popupPadding = 8.h;
 
 //ANCHOR Font Size
 final double headerFontSize = 25.sp; // View headers
 final double smallHeaderFontSize = 20.sp; // View headers
 final double accentFontSize = 18.sp; // F
-final double fontSize16 = 16.sp; // orm headers
+final double fontSize16 = 16.sp;
+final double fontSize17 = 17.sp;// orm headers
 final double fontSize = 14.sp; // Form fields
 final double fontSizesm = 12.sp;
 final double fontSizexs = 10.sp;
 
 final double iconSize = 10.w;
+final double starSize = 8.w;
 
 TextStyle headerTextStyle({Color? color, double? fontSize, FontWeight? weight, TextDecoration? decoration}) =>
     GoogleFonts.playpenSans(textStyle: TextStyle(

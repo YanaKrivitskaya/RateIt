@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rateit/helpers/route_constants.dart';
-import 'package:rateit/models/property_edit_args.model.dart';
+import 'package:rateit/models/args_models/item_args.model.dart';
+import 'package:rateit/models/args_models/property_edit_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
@@ -13,8 +14,13 @@ import 'package:rateit/views/collection/collection_edit/collection_edit_view.dar
 import 'package:rateit/views/collection/collection_view/collection_view.dart';
 import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
 import 'package:rateit/views/home/home.page.dart';
-import 'package:rateit/views/properties/properties_edit/properties_edit_view.dart';
-import 'package:rateit/views/properties/properties_edit/cubit/properties_edit_cubit.dart';
+import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
+import 'package:rateit/views/items/item_edit/image_crop_view.dart';
+import 'package:rateit/views/items/item_edit/item_edit_view.dart';
+import 'package:rateit/views/items/item_view/cubit/item_view_cubit.dart';
+import 'package:rateit/views/items/item_view/item_view.dart';
+import 'package:rateit/views/properties/properties_edit/property_edit_view.dart';
+import 'package:rateit/views/properties/properties_edit/cubit/property_edit_cubit.dart';
 import 'package:rateit/views/properties/properties_view/properties_view.dart';
 import 'package:rateit/views/properties/properties_view/properties_view_cubit.dart';
 
@@ -74,12 +80,41 @@ class RouteGenerator {
       case editPropertiesRoute:
         if (args is PropertyEditArgs) {
           return MaterialPageRoute(
-            builder: (_) => BlocProvider<PropertiesEditCubit>(
-              create: (context) => PropertiesEditCubit()..loadProperty(args.property),
-              child: PropertiesEditView(collectionId: args.collectionId),
+            builder: (_) => BlocProvider<PropertyEditCubit>(
+              create: (context) => PropertyEditCubit()..loadProperty(args.property),
+              child: PropertyEditView(collectionId: args.collectionId),
             ),
           );}
         return _errorRoute();
+      case editItemRoute:
+        if (args is ItemEditArgs) {
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider<ItemEditCubit>(
+              create: (context) => ItemEditCubit()..loadItem(args.collectionId, args.item),
+              child: ItemEditView(collectionId: args.collectionId),
+            ),
+          );}
+        return _errorRoute();
+      case viewItemRoute:
+        if (args is ItemViewArgs) {
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider<ItemViewCubit>(
+              create: (context) => ItemViewCubit()..getItem(args.collectionId, args.itemId),
+              child: ItemView(collectionId: args.collectionId, itemId: args.itemId),
+            ),
+          );}
+        return _errorRoute();
+      case imageCropRoute:
+        {
+          if (args is ImageCropArguments) {
+            return MaterialPageRoute(
+                builder: (_) {
+                  return ImageCropView(args.file, args.compress);
+                }
+            );
+          }
+          return _errorRoute();
+        }
       default:
         return _errorRoute();
     }

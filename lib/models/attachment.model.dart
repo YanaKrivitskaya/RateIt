@@ -5,40 +5,51 @@ import 'package:flutter/material.dart';
 @immutable
 class Attachment{
   final int? id;
-  final String? name;
-  final Uint8List? source;
+  final String? originalName;
+  final String? path;
+  Uint8List? source;
+  bool toDelete;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
-  const Attachment({
+  Attachment({
     this.id,
-    this.name,
+    this.originalName,
+    this.path,
     this.source,
+    this.toDelete = false,
     this.createdDate,
     this.updatedDate,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'source': source,
-      'createdDate': createdDate?.microsecondsSinceEpoch,
-      'updatedDate': updatedDate?.microsecondsSinceEpoch,
-    };
-  }
-
   factory Attachment.fromMap(Map<String, dynamic> map) {
     return Attachment(
       id: map['id'],
-      name: map['name'],
-      source: map['source'] != null ? Uint8List.fromList(map['source']['data'].cast<int>()) : null,
+      originalName: map['originalName'],
+      path: map['path'],
+      //source: map['source'] != null ? Uint8List.fromList(map['source']['data'].cast<int>()) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
     );
   }
 
-  String toJson() => jsonEncode(toMap());
-
   factory Attachment.fromJson(String source) => Attachment.fromMap(jsonDecode(source));
+
+  Attachment copyWith({
+    int? id,
+    String? originalName,
+    String? path,
+    Uint8List? source,
+    DateTime? createdDate,
+    DateTime? updatedDate,
+  }) {
+    return Attachment(
+      id: id ?? this.id,
+      originalName: originalName ?? this.originalName,
+      path: path ?? this.path,
+      source: source ?? this.source,
+      createdDate: createdDate ?? this.createdDate,
+      updatedDate: updatedDate ?? this.updatedDate,
+    );
+  }
 }
