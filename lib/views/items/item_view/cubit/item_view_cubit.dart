@@ -15,7 +15,7 @@ class ItemViewCubit extends Cubit<ItemViewState> {
         super(ItemViewInitial());
 
   void getItem(int collectionId, int itemId) async{
-    emit(ItemViewInitial());
+    emit(ItemViewLoading(state.item, state.hasEdit));
 
     try{
       CollectionItem? item = await _collectionRepository.getItemById(collectionId, itemId);
@@ -28,11 +28,16 @@ class ItemViewCubit extends Cubit<ItemViewState> {
             item.attachments![index] = att;
           }
         }
-        emit(ItemViewSuccess(item));
+        emit(ItemViewSuccess(item, state.hasEdit));
       }
     }catch(e){
       print(e.toString());
-      return emit(ItemViewError(e.toString(), null));
+      return emit(ItemViewError(e.toString(), null, state.hasEdit));
     }
   }
+
+  void setEditState(){
+    emit(ItemViewSuccess(state.item!, true));
+  }
+
 }

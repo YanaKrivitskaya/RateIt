@@ -47,7 +47,9 @@ class _PropertyEditViewState extends State<PropertyEditView> {
           if(state is PropertyEditCreated){
             globalScaffoldMessenger.currentState!
                 .hideCurrentSnackBar();
-            Navigator.pop(context);
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.pop(context, state.property!);
+            });
           }
         },
         child: BlocBuilder<PropertyEditCubit, PropertyEditState>(

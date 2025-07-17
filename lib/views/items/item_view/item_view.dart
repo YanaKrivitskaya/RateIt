@@ -59,14 +59,20 @@ class _ItemViewState extends State<ItemView> {
                 leading: IconButton(
                     icon: Icon(Icons.arrow_back),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, state.hasEdit ? state.item : null);
                     }),
                 actions: [
                   IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () {
                         if(item != null){
-                          Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: widget.collectionId, item: item));
+                          context.read<ItemViewCubit>().setEditState();
+                          Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: widget.collectionId, item: item)).then((value)
+                          {
+                            if(value != null && value is CollectionItem){
+                              context.read<ItemViewCubit>().getItem(widget.collectionId, value.id!);
+                            }
+                          });
                         }
                         //Navigator.pop(context);
                       }),

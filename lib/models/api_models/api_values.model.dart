@@ -1,11 +1,11 @@
 
 import 'dart:convert';
 
-class ApiPropertyValueModel{
+class ApiCreatePropertyValueModel{
   int itemId;
   List<ApiPropertyValue> data;
 
-  ApiPropertyValueModel(this.itemId, this.data);
+  ApiCreatePropertyValueModel(this.itemId, this.data);
 
   Map<String, dynamic> toMap() {
     return {
@@ -16,18 +16,39 @@ class ApiPropertyValueModel{
   String toJson() => jsonEncode(toMap());
 }
 
-class ApiPropertyValue{
-  int itemId;
-  int propertyId;
-  String value;
+class ApiUpdatePropertyValueModel{
+  List<ApiPropertyValue> data;
 
-  ApiPropertyValue(this.itemId, this.propertyId, this.value);
+  ApiUpdatePropertyValueModel(this.data);
 
   Map<String, dynamic> toMap() {
     return {
+      'data': data.map((d) => d.toMap()).toList(),
+    };
+  }
+  String toJson() => jsonEncode(toMap());
+}
+
+class ApiPropertyValue{
+  int? id;
+  int? itemId;
+  int? propertyId;
+  String value;
+
+  ApiPropertyValue({
+    this.id,
+    this.itemId,
+    this.propertyId,
+    required this.value,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
       'itemId': itemId,
       'propertyId': propertyId,
       'value': value,
     };
   }
+
 }

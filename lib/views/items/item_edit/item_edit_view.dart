@@ -58,7 +58,9 @@ class _ItemEditViewState extends State<ItemEditView> {
         if(state is ItemEditCreated){
           globalScaffoldMessenger.currentState!
               .hideCurrentSnackBar();
-          Navigator.pop(context);
+          Future.delayed(const Duration(seconds: 2), () {
+            Navigator.pop(context, state.item);
+          });
         }
       },
       child: BlocBuilder<ItemEditCubit, ItemEditState>(

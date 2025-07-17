@@ -4,6 +4,7 @@ import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
+import 'package:rateit/main.dart';
 import 'package:rateit/models/args_models/property_edit_args.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/properties/properties_view/properties_view_cubit.dart';
@@ -20,7 +21,24 @@ class _PropertiesViewState extends State<PropertiesView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<PropertiesViewCubit, PropertiesViewState>(
-      listener: (context, state){},
+      listener: (context, state){
+        if(state is PropertiesViewLoading){
+          var duration = Duration(seconds: 3);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
+        }
+        if(state is PropertiesViewSuccess){
+          globalScaffoldMessenger.currentState!
+              .hideCurrentSnackBar();
+        }
+        if(state is PropertiesViewError){
+          var duration = Duration(days: 1);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
+        }
+      },
       child: BlocBuilder<PropertiesViewCubit, PropertiesViewState>(
         builder: (context, state){
           List<CollectionProperty>? properties = state.properties;
@@ -35,7 +53,12 @@ class _PropertiesViewState extends State<PropertiesView> {
                 })),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: null));
+                Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: null)).then((value)
+                {
+                  if(value != null && value is CollectionProperty){
+                    context.read<PropertiesViewCubit>().updatePropertyList(value);
+                  }
+                });
               },
               tooltip: 'Add new property',
               backgroundColor: ColorsPalette.boyzone,
@@ -52,7 +75,12 @@ class _PropertiesViewState extends State<PropertiesView> {
                   return Card(
                     child: InkWell(
                       onTap: (){
-                        Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: property));
+                        Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: property)).then((value)
+                        {
+                          if(value != null && value is CollectionProperty){
+                            context.read<PropertiesViewCubit>().updatePropertyList(value);
+                          }
+                        });;
                       },
                       child: ListTile(
                         title: Text(property.name!, style: appTextStyle(fontSize: accentFontSize)),

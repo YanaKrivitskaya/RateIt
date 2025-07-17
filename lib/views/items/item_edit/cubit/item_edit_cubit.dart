@@ -31,12 +31,16 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     }else{
       if(item.attachments != null){
         for(var att in item.attachments!){
-          //var index = item.attachments!.indexOf(att);
-          Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
-          //att.source = imageSource;
-          if(imageSource != null){
-            files.add(AttachmentViewModel(id: att.id!, source: imageSource, state: AttState.keep));
+          if(att.source == null){
+            Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
+            //att.source = imageSource;
+            if(imageSource != null){
+              files.add(AttachmentViewModel(id: att.id!, source: imageSource, state: AttState.keep));
+            }
+          }else{
+            files.add(AttachmentViewModel(id: att.id!, source: att.source, state: AttState.keep));
           }
+
           //item.attachments![index] = att;
         }
       }
@@ -73,11 +77,17 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     emit(ItemEditLoading(item, state.files));
 
     try{
-      CollectionItem? newItem = await _collectionRepository.createItem(collectionId, item);
-      if(newItem!= null){
+      CollectionItem? newItem = item.id != null
+          ? await _collectionRepository.updateItem(collectionId, item)
+          : await _collectionRepository.createItem(collectionId, item);
+
+      if(newItem != null){
         if(item.properties != null){
-          await _collectionRepository.updatePropertyValues(collectionId, newItem.id!, item.properties!);
+          item.id != null
+              ? await _collectionRepository.updatePropertyValues(collectionId, item.properties!)
+              : await _collectionRepository.createPropertyValues(collectionId, newItem.id!, item.properties!);
         }
+
         if(state.files.isNotNullOrEmpty){
           List<XFile> newFiles = List.empty(growable: true);
 
@@ -94,7 +104,10 @@ class ItemEditCubit extends Cubit<ItemEditState> {
           }
         }
         emit(ItemEditCreated(newItem, state.files));
+      }else{
+        emit(ItemEditError('Oops, something went wrong. Try again!', item, state.files));
       }
+
     }catch(e){
       return emit(ItemEditError(e.toString(), item, state.files));
     }
