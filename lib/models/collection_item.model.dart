@@ -41,6 +41,7 @@ class CollectionItem{
   }
 
   factory CollectionItem.fromMap(Map<String, dynamic> map) {
+
     return CollectionItem(
       id: map['id'],
       name: map['name'],

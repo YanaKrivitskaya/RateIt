@@ -9,6 +9,7 @@ class CollectionProperty{
   final String? name;
   final String? type;
   final String? comment;
+  final int? valueId;
   final String? value;
   final bool? isFilter;
   final bool? isDropdown;
@@ -21,6 +22,7 @@ class CollectionProperty{
     this.name,
     this.type,
     this.comment,
+    this.valueId,
     this.value,
     this.isFilter,
     this.isDropdown,
@@ -48,6 +50,7 @@ class CollectionProperty{
       name: map['name'],
       type: map['type'],
       comment: map['comment'],
+      valueId: map['collection_item_value'] != null ? map['collection_item_value']['id'] : null,
       value: map['collection_item_value'] != null ? map['collection_item_value']['value'].toString() : null,
       isFilter: map['isFilter'],
       isDropdown: map['isDropdown'],
@@ -66,6 +69,7 @@ class CollectionProperty{
     String? name,
     String? type,
     String? comment,
+    int? valueId,
     String? value,
     bool? isFilter,
     bool? isDropdown,
@@ -78,6 +82,7 @@ class CollectionProperty{
       name: name ?? this.name,
       type: type ?? this.type,
       comment: comment ?? this.comment,
+      valueId: valueId ?? this.valueId,
       value: value ?? this.value,
       isFilter: isFilter ?? this.isFilter,
       isDropdown: isDropdown ?? this.isDropdown,

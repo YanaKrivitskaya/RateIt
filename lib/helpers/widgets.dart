@@ -16,7 +16,9 @@ SnackBar customSnackBar(SnackBarState state, String? text, Duration? duration) =
   duration: duration ?? Duration(seconds: 2),
   content: Row(
     mainAxisAlignment: MainAxisAlignment.center,
-    children: state == SnackBarState.loading ? [
+    children: state == SnackBarState.success ? [
+      Icon(Icons.check, color: ColorsPalette.white)
+    ] : state == SnackBarState.loading ? [
       CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(ColorsPalette.lynxWhite),
       ),

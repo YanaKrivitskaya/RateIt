@@ -21,4 +21,19 @@ class HomeCubit extends Cubit<HomeState> {
       return emit(HomeStateError(null, e.toString()));
     }
   }
+
+  void getCollectionBasic(int collectionId) async{
+    emit(HomeStateLoading(state.collections));
+
+    try{
+      Collection? collection = await _collectionRepository.getCollectionBasic(collectionId);
+      if(collection != null){
+        state.collections!.add(collection);
+        emit(HomeStateSuccess(state.collections!));
+      }
+    }catch(e){
+      print(e.toString());
+      return emit(HomeStateError(state.collections, e.toString()));
+    }
+  }
 }

@@ -26,7 +26,7 @@ class _CollectionViewState extends State<CollectionView> {
     return BlocListener<CollectionViewCubit, CollectionViewState>(
         listener: (context, state){
           if(state is CollectionViewLoading){
-            var duration = Duration(days: 1);
+            var duration = Duration(seconds: 3);
             globalScaffoldMessenger.currentState!
               ..hideCurrentSnackBar()
               ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
@@ -59,9 +59,13 @@ class _CollectionViewState extends State<CollectionView> {
                             icon: Icon(Icons.edit),
                             onPressed: () {
                               if(collection != null){
-                                Navigator.pushNamed(context, editCollectionRoute, arguments: collection);
+                                Navigator.pushNamed(context, editCollectionRoute, arguments: collection).then((value)
+                                {
+                                  if(value != null && value is Collection){
+                                    context.read<CollectionViewCubit>().updateCollectionDetails(value);
+                                  }
+                                });
                               }
-                              //Navigator.pop(context);
                             }),
                         IconButton(
                             icon: Icon(Icons.settings),
@@ -76,7 +80,12 @@ class _CollectionViewState extends State<CollectionView> {
                   floatingActionButton: FloatingActionButton(
                     onPressed: () {
                       if(collection != null){
-                        Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: collection.id!, item: null));
+                        Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: collection.id!, item: null)).then((value)
+                        {
+                          if(value != null && value is CollectionItem){
+                            context.read<CollectionViewCubit>().addNewItem(state.collection!.id!, value);
+                          }
+                        });
                       }
                     },
                     tooltip: 'Add new item',
@@ -101,20 +110,29 @@ class _CollectionViewState extends State<CollectionView> {
                               return Card(
                                 child: InkWell(
                                     onTap: (){
-                                      Navigator.pushNamed(context, viewItemRoute, arguments: ItemViewArgs(collectionId: collection.id!, itemId: item.id!));
+                                      Navigator.pushNamed(context, viewItemRoute, arguments: ItemViewArgs(collectionId: collection.id!, itemId: item.id!)).then((value)
+                                      {
+                                        if(value != null && value is CollectionItem){
+                                          context.read<CollectionViewCubit>().updateItem(value, position);
+                                        }
+                                      });
                                     },
                                     child: Container(
                                       height: width30,
                                       child: Row(children: [
                                         Container(
                                             width: width30,
-                                            child: att?.source != null ? SizedBox(
-                                              height: width30,
-                                              child: Image.memory(att!.source!),
+                                            child: att?.source != null ? Card(
+                                              child: SizedBox(
+                                                height: width30,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(9.0),
+                                                  child: Image.memory(att!.source!)
+                                                ) ,
+                                              )
                                             ) : Card(
                                               color: ColorsPalette.blueGrey,
                                               child: SizedBox(
-                                                width: width30,
                                                 height: width30,
                                                 child: Icon(Icons.image, color: Colors.white, size: iconSize),
                                               ),

@@ -51,7 +51,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
       body: BlocListener<CollectionEditCubit, CollectionEditState>(
         listener: (context, state){
           if(state is CollectionEditLoading){
-            var duration = Duration(days: 1);
+            var duration = Duration(seconds: 3);
             globalScaffoldMessenger.currentState!
               ..hideCurrentSnackBar()
               ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
@@ -67,9 +67,13 @@ class _CollectionEditViewState extends State<CollectionEditView> {
               ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
           }
           if(state is CollectionEditCreated){
+            var duration = Duration(seconds: 2);
             globalScaffoldMessenger.currentState!
-                .hideCurrentSnackBar();
-            Navigator.pop(context);
+              ..hideCurrentSnackBar()
+              ..showSnackBar(customSnackBar(SnackBarState.success, null, duration));
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.pop(context, state.collection!);
+            });
           }
         },
         child: BlocBuilder<CollectionEditCubit, CollectionEditState>(

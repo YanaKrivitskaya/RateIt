@@ -25,6 +25,28 @@ class CollectionRepository {
     return collections;
   }
 
+  Future<Collection?> getCollectionBasic(int collectionId) async{
+    if (kDebugMode) {
+      print("getCollectionBasic");
+    }
+    final response = await apiService.getSecure("${baseUrl}basic/$collectionId");
+
+    var collection = response["collection"] != null ?
+    Collection.fromMap(response["collection"]) : null;
+    return collection;
+  }
+
+  Future<CollectionProperty?> getPropertyBasic(int collectionId, int propertyId) async{
+    if (kDebugMode) {
+      print("getPropertyBasic");
+    }
+    final response = await apiService.getSecure("$baseUrl/$collectionId/properties/$propertyId");
+
+    var property = response["property"] != null ?
+    CollectionProperty.fromMap(response["property"]) : null;
+    return property;
+  }
+
   Future<Collection?> getCollectionById(int collectionId) async{
     if (kDebugMode) {
       print("getCollectionById");
@@ -109,12 +131,22 @@ class CollectionRepository {
     return itemResponse;
   }
 
-  Future<CollectionItem?> updatePropertyValues(int collectionId, int itemId, List<CollectionProperty> properties) async{
-    print("updatePropertyValues");
-    ApiPropertyValueModel model = ApiPropertyValueModel(itemId, List.empty(growable: true));
+  Future<CollectionItem?> updateItem(int collectionId, CollectionItem item) async{
+    print("updateItem");
+
+    final response = await apiService.putSecure("$baseUrl$collectionId/items", item.toJson());
+
+    var itemResponse = response["item"] != null ?
+    CollectionItem.fromMap(response['item']) : null;
+    return itemResponse;
+  }
+
+  Future<CollectionItem?> createPropertyValues(int collectionId, int itemId, List<CollectionProperty> properties) async{
+    print("createPropertyValues");
+    ApiCreatePropertyValueModel model = ApiCreatePropertyValueModel(itemId, List.empty(growable: true));
 
     for (var prop in properties) {
-      model.data.add(ApiPropertyValue(itemId, prop.id!, prop.value!));
+      model.data.add(ApiPropertyValue(itemId: itemId, propertyId:  prop.id!, value: prop.value!));
     }
 
     final response = await apiService.postSecure('$baseUrl$collectionId/properties/values', model.toJson());
@@ -122,6 +154,18 @@ class CollectionRepository {
     var itemResponse = response["item"] != null ?
     CollectionItem.fromMap(response['item']) : null;
     return itemResponse;
+  }
+
+  Future<void> updatePropertyValues(int collectionId, List<CollectionProperty> properties) async{
+    print("updatePropertyValues");
+    ApiUpdatePropertyValueModel model = ApiUpdatePropertyValueModel(List.empty(growable: true));
+
+    for (var prop in properties) {
+      model.data.add(ApiPropertyValue(id: prop.valueId!, value: prop.value!));
+    }
+
+    final response = await apiService.putSecure('$baseUrl$collectionId/properties/values', model.toJson());
+    print(response.toString());
   }
 
   Future<List<Attachment>?> createAttachments(int collectionId, int itemId, List<XFile> attachments) async{
@@ -138,6 +182,17 @@ class CollectionRepository {
     var attResponse = response["attachments"]?.map<Attachment>((map) =>
         Attachment.fromMap(map)).toList();
     return attResponse;
+  }
+
+  Future<Attachment?> getCoverAttachment(int itemId) async{
+    if (kDebugMode) {
+      print("getCoverAttachment");
+    }
+    final response = await apiService.getSecure("$attachmentsUrl$itemId");
+
+    var attachment = response["attachment"] != null ?
+    Attachment.fromMap(response["attachment"]) : null;
+    return attachment;
   }
 
   Future<Uint8List?> getAttachmentById(int collectionId, id) async{
