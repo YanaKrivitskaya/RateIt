@@ -67,5 +67,17 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
       return emit(PropertyEditError(e.toString(), property));
     }
   }
+
+  void deleteProperty(int id) async{
+    emit(PropertyEditLoading(state.property));
+
+    try{
+      await _collectionRepository.deleteProperty(id);
+      emit(PropertyEditDeleted(id));
+    }
+    catch(e){
+      return emit(PropertyEditError(e.toString(), state.property));
+    }
+  }
 }
 

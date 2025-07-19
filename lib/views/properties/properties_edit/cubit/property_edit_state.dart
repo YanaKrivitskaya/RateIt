@@ -31,6 +31,13 @@ class PropertyEditCreated extends PropertyEditState{
   const PropertyEditCreated(this.property): super(property);
 }
 
+final class PropertyEditDeleted extends PropertyEditState {
+  final int id;
+  const PropertyEditDeleted(this.id):super(null);
+
+  List<Object?> get props => [id];
+}
+
 class PropertyEditError extends PropertyEditState{
   final String error;
   const PropertyEditError(this.error, super.property);

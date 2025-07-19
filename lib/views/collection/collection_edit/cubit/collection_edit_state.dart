@@ -30,6 +30,13 @@ class CollectionEditCreated extends CollectionEditState{
   const CollectionEditCreated(this.collection): super(collection);
 }
 
+class CollectionEditDelete extends CollectionEditState{
+  final int id;
+  const CollectionEditDelete(this.id) : super(null);
+
+  List<Object?> get props => [id];
+}
+
 class CollectionEditError extends CollectionEditState{
   final String error;
   const CollectionEditError(this.error, super.collection);

@@ -83,4 +83,10 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
     emit(CollectionViewSuccess(state.collection!));
   }
 
+  void removeItem(int id){
+    emit(CollectionViewLoading(state.collection));
+    state.collection!.items!.removeWhere((i)=> i.id == id);
+    emit(CollectionViewSuccess(state.collection!));
+  }
+
 }

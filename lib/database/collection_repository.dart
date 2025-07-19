@@ -221,4 +221,36 @@ class CollectionRepository {
     }
     await apiService.deleteSecure("$attachmentsUrl$collectionId/$id");
   }
+
+  Future<void> deleteDropdownValue(int dropdownId) async{
+    if (kDebugMode) {
+      print("deleteDropdownValue");
+    }
+
+    await apiService.deleteSecure("${baseUrl}dropdown/$dropdownId");
+  }
+
+  Future<void> deleteProperty(propertyId) async{
+    if (kDebugMode) {
+      print("deleteProperty");
+    }
+
+    await apiService.deleteSecure("${baseUrl}properties/$propertyId");
+  }
+
+  Future<void> deleteItem(int itemId) async{
+    if (kDebugMode) {
+      print("deleteItem");
+    }
+
+    await apiService.deleteSecure("${baseUrl}items/$itemId");
+  }
+
+  Future<void> deleteCollection(collectionId) async{
+    if (kDebugMode) {
+      print("deleteCollection");
+    }
+
+    await apiService.deleteSecure("$baseUrl$collectionId");
+  }
 }

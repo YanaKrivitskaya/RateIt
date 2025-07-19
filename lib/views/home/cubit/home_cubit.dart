@@ -36,4 +36,11 @@ class HomeCubit extends Cubit<HomeState> {
       return emit(HomeStateError(state.collections, e.toString()));
     }
   }
+
+  void removeCollection(int id){
+    emit(HomeStateLoading(state.collections));
+
+    state.collections!.removeWhere((c)=> c.id == id);
+    emit(HomeStateSuccess(state.collections!));
+  }
 }

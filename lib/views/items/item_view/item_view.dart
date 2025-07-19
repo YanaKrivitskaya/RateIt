@@ -15,6 +15,7 @@ import 'package:rateit/models/attachment.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/items/item_view/cubit/item_view_cubit.dart';
+import 'package:rateit/views/items/item_view/item_delete_dialog.dart';
 import 'package:rateit/views/items/item_view/items_image_provider.dart';
 
 class ItemView extends StatefulWidget {
@@ -49,6 +50,15 @@ class _ItemViewState extends State<ItemView> {
             ..hideCurrentSnackBar()
             ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
         }
+        if(state is ItemViewDelete){
+          var duration = Duration(seconds: 2);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.success, "Item deleted", duration));
+          Future.delayed(const Duration(seconds: 2), () {
+            Navigator.pop(context, state.id);
+          });
+        }
       },
         child: BlocBuilder<ItemViewCubit, ItemViewState>(
         builder: (context, state){
@@ -80,7 +90,14 @@ class _ItemViewState extends State<ItemView> {
                       icon: Icon(Icons.delete),
                       onPressed: () {
                         if(item != null){
-                          //Navigator.pushNamed(context, viewPropertiesRoute, arguments: collection.id);
+                          showDialog(
+                              barrierDismissible: false, context: context, builder: (_) =>
+                              ItemDeleteDialog(itemName: item.name!)
+                          ).then((value) {
+                            if(value != null && value == 1){
+                              context.read<ItemViewCubit>().deleteItem(item.id!);
+                            }
+                          });
                         }
                         //Navigator.pop(context);
                       })

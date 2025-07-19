@@ -7,6 +7,7 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/views/properties/properties_edit/property_delete_dialog.dart';
 import 'package:rateit/views/properties/properties_edit/property_dropdown_dialog.dart';
 
 import 'cubit/property_edit_cubit.dart';
@@ -51,6 +52,15 @@ class _PropertyEditViewState extends State<PropertyEditView> {
               Navigator.pop(context, state.property!);
             });
           }
+          if(state is PropertyEditDeleted){
+            var duration = Duration(seconds: 2);
+            globalScaffoldMessenger.currentState!
+              ..hideCurrentSnackBar()
+              ..showSnackBar(customSnackBar(SnackBarState.success, "Property deleted", duration));
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.pop(context, state.id);
+            });
+          }
         },
         child: BlocBuilder<PropertyEditCubit, PropertyEditState>(
         builder: (context, state){
@@ -85,6 +95,9 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                       })
                 ]
             ),
+            persistentFooterButtons: [
+                deleteButton(context, state.property)
+            ],
             body: property != null ? Container(
               padding: EdgeInsets.symmetric(horizontal: borderPadding),
               child: SingleChildScrollView(
@@ -142,6 +155,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                       // maintainState: false,
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
                         Divider(color: ColorsPalette.algalFuel),
+                        Text("Dropdown values", style: appTextStyle(fontSize: accentFontSize),),
                         OutlinedButton(
                             style: ButtonStyle(
                               //padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.symmetric(horizontal: buttonPadding)),
@@ -160,7 +174,6 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                               });
                             },
                             child: Text('Add value')),
-                        Text("Dropdown values:", style: appTextStyle(fontSize: accentFontSize),),
                         (property?.dropdownOptions != null && property!.dropdownOptions!.isNotEmpty )?
                         Column(children: [
                           ListView.builder(
@@ -192,7 +205,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                             },
                           )
                         ],)
-                        : SizedBox(),
+                        : SizedBox()
                       ],)
                     )
                   ],)
@@ -203,4 +216,31 @@ class _PropertyEditViewState extends State<PropertyEditView> {
         })
     );
   }
+
+  Widget deleteButton(BuildContext context, CollectionProperty? property) => OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(9.0),
+        ),
+        backgroundColor: ColorsPalette.desire,
+        foregroundColor: ColorsPalette.white,
+        side: BorderSide(color: ColorsPalette.desire),
+      ),
+      onPressed: (){
+        if(property != null){
+          showDialog(
+              barrierDismissible: false, context: context, builder: (_) =>
+              PropertyDeleteDialog(propertyName: property.name!)
+          ).then((val) {
+            if(val == 1){
+              context.read<PropertyEditCubit>().deleteProperty(property.id!);
+            }
+          });
+        }
+      },
+      child: Row(mainAxisAlignment: MainAxisAlignment.center,children: [
+        Icon(Icons.delete),
+        Text('Delete property')
+      ],)
+  );
 }
