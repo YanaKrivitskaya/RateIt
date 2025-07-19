@@ -26,6 +26,14 @@ class ItemViewSuccess extends ItemViewState{
   const ItemViewSuccess(this.item, this.hasEdit): super(item, hasEdit);
 }
 
+class ItemViewDelete extends ItemViewState{
+  final int id;
+
+  const ItemViewDelete(this.id) : super(null, false);
+
+  List<Object?> get props => [id];
+}
+
 class ItemViewError extends ItemViewState{
   final String error;
 

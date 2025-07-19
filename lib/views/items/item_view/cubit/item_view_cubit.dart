@@ -39,5 +39,18 @@ class ItemViewCubit extends Cubit<ItemViewState> {
   void setEditState(){
     emit(ItemViewSuccess(state.item!, true));
   }
+  
+  void deleteItem(int id) async{
+    emit(ItemViewLoading(state.item, state.hasEdit));
+
+    try{
+      await _collectionRepository.deleteItem(id);
+      emit(ItemViewDelete(id));
+    }catch(e){
+      print(e.toString());
+      return emit(ItemViewError(e.toString(), null, state.hasEdit));
+    }
+
+  }
 
 }

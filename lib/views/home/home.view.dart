@@ -23,7 +23,9 @@ class _HomeViewState extends State<HomeView> {
     return  BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state){
           if(state is ProfileInitial || state is ProfileStateLoading){
-            return loadingWidget(ColorsPalette.algalFuel);
+            return Scaffold(
+              body: loadingWidget(ColorsPalette.algalFuel),
+            );
           }else{
             return BlocListener<HomeCubit, HomeState>(
                 listener: (context, state){
@@ -99,7 +101,12 @@ class _HomeViewState extends State<HomeView> {
                                                       return InkWell(
                                                           child: collectionListItem(collections[i], context),
                                                           onTap: () {
-                                                            Navigator.pushNamed(context, viewCollectionRoute, arguments: collections[i].id);
+                                                            Navigator.pushNamed(context, viewCollectionRoute, arguments: collections[i].id).then((value)
+                                                            {
+                                                              if(value != null && value is int){
+                                                                context.read<HomeCubit>().removeCollection(value);
+                                                              }
+                                                            });
                                                           }
                                                       );
                                                       //return collectionListItem(collections[i], context);

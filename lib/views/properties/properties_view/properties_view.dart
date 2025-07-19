@@ -55,8 +55,10 @@ class _PropertiesViewState extends State<PropertiesView> {
               onPressed: () {
                 Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: null)).then((value)
                 {
-                  if(value != null && value is CollectionProperty){
-                    context.read<PropertiesViewCubit>().updatePropertyList(value);
+                  if(value != null){
+                    if(value is CollectionProperty){
+                      context.read<PropertiesViewCubit>().updatePropertyList(value);
+                    }
                   }
                 });
               },
@@ -77,10 +79,15 @@ class _PropertiesViewState extends State<PropertiesView> {
                       onTap: (){
                         Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: property)).then((value)
                         {
-                          if(value != null && value is CollectionProperty){
-                            context.read<PropertiesViewCubit>().updatePropertyList(value);
+                          if(value != null){
+                            if(value is CollectionProperty){
+                              context.read<PropertiesViewCubit>().updatePropertyList(value);
+                            }
+                            else if(value is int){
+                              context.read<PropertiesViewCubit>().removeProperty(value);
+                            }
                           }
-                        });;
+                        });
                       },
                       child: ListTile(
                         title: Text(property.name!, style: appTextStyle(fontSize: accentFontSize)),

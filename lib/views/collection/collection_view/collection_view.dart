@@ -61,8 +61,14 @@ class _CollectionViewState extends State<CollectionView> {
                               if(collection != null){
                                 Navigator.pushNamed(context, editCollectionRoute, arguments: collection).then((value)
                                 {
-                                  if(value != null && value is Collection){
-                                    context.read<CollectionViewCubit>().updateCollectionDetails(value);
+                                  if(value != null){
+                                    if(value is Collection){
+                                      context.read<CollectionViewCubit>().updateCollectionDetails(value);
+                                    }else if(value is int){
+                                      Future.delayed(const Duration(seconds: 2), () {
+                                        Navigator.pop(context, value);
+                                      });
+                                    }
                                   }
                                 });
                               }
@@ -112,8 +118,12 @@ class _CollectionViewState extends State<CollectionView> {
                                     onTap: (){
                                       Navigator.pushNamed(context, viewItemRoute, arguments: ItemViewArgs(collectionId: collection.id!, itemId: item.id!)).then((value)
                                       {
-                                        if(value != null && value is CollectionItem){
-                                          context.read<CollectionViewCubit>().updateItem(value, position);
+                                        if(value != null){
+                                          if(value is CollectionItem){
+                                            context.read<CollectionViewCubit>().updateItem(value, position);
+                                          }else if(value is int){
+                                            context.read<CollectionViewCubit>().removeItem(value);
+                                          }
                                         }
                                       });
                                     },

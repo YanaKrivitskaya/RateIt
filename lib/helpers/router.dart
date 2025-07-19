@@ -9,7 +9,7 @@ import 'package:rateit/models/args_models/property_edit_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
-import 'package:rateit/views/collection/collection_edit/collection_edit_cubit.dart';
+import 'package:rateit/views/collection/collection_edit/cubit/collection_edit_cubit.dart';
 import 'package:rateit/views/collection/collection_edit/collection_edit_view.dart';
 import 'package:rateit/views/collection/collection_view/collection_view.dart';
 import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';

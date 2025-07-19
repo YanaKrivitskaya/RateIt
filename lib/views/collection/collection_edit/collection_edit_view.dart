@@ -9,7 +9,8 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/views/collection/collection_edit/collection_edit_cubit.dart';
+import 'package:rateit/views/collection/collection_edit/collection_delete_dialog.dart';
+import 'package:rateit/views/collection/collection_edit/cubit/collection_edit_cubit.dart';
 
 class CollectionEditView extends StatefulWidget {
   const CollectionEditView({super.key});
@@ -39,77 +40,85 @@ class _CollectionEditViewState extends State<CollectionEditView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Edit collection'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-      })),
-      body: BlocListener<CollectionEditCubit, CollectionEditState>(
-        listener: (context, state){
-          if(state is CollectionEditLoading){
-            var duration = Duration(seconds: 3);
-            globalScaffoldMessenger.currentState!
-              ..hideCurrentSnackBar()
-              ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
-          }
-          if(state is CollectionEditSuccess){
-            globalScaffoldMessenger.currentState!
-                .hideCurrentSnackBar();
-          }
-          if(state is CollectionEditError){
-            var duration = Duration(days: 1);
-            globalScaffoldMessenger.currentState!
-              ..hideCurrentSnackBar()
-              ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
-          }
-          if(state is CollectionEditCreated){
-            var duration = Duration(seconds: 2);
-            globalScaffoldMessenger.currentState!
-              ..hideCurrentSnackBar()
-              ..showSnackBar(customSnackBar(SnackBarState.success, null, duration));
-            Future.delayed(const Duration(seconds: 2), () {
-              Navigator.pop(context, state.collection!);
-            });
-          }
-        },
-        child: BlocBuilder<CollectionEditCubit, CollectionEditState>(
+    return BlocListener<CollectionEditCubit, CollectionEditState>(
+      listener: (context, state){
+        if(state is CollectionEditLoading){
+          var duration = Duration(seconds: 3);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.loading, null, duration));
+        }
+        if(state is CollectionEditSuccess){
+          globalScaffoldMessenger.currentState!
+              .hideCurrentSnackBar();
+        }
+        if(state is CollectionEditError){
+          var duration = Duration(days: 1);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.error, state.error, duration));
+        }
+        if(state is CollectionEditCreated){
+          var duration = Duration(seconds: 2);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.success, null, duration));
+          Future.delayed(const Duration(seconds: 2), () {
+            Navigator.pop(context, state.collection!);
+          });
+        }
+        if(state is CollectionEditDelete){
+          var duration = Duration(seconds: 2);
+          globalScaffoldMessenger.currentState!
+            ..hideCurrentSnackBar()
+            ..showSnackBar(customSnackBar(SnackBarState.success, null, duration));
+          Future.delayed(const Duration(seconds: 2), () {
+            Navigator.pop(context, state.id);
+          });
+        }
+      },
+      child: BlocBuilder<CollectionEditCubit, CollectionEditState>(
           builder: (context, state){
-            if (state is CollectionEditInitial) {
-              return loadingWidget(ColorsPalette.algalFuel);
-            } else {
-              return SingleChildScrollView(
-                padding: EdgeInsets.all(viewPadding),
-                child: FormBuilder(
-                    key: _formKey,
-                    child: Column(children: [
-                      collectionPreview(state.collection!, state.collection?.colorPrimary, state.collection?.colorAccent, state.collection?.icon),
-                      FormBuilderTextField(
-                        name: "name",
-                        maxLength: 50,
-                        initialValue: state.collection?.name ?? '',
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required()
-                        ]),
-                      ),
-                      FormBuilderTextField(
-                        name: "description",
-                        initialValue: state.collection?.description ?? '',
-                        decoration: const InputDecoration(labelText: 'Description'),
-                        maxLength: 250,
-                        maxLines: 5,
-                      ),
-                      _submitButton(context, state.collection!)
-                    ])
-                )
+            return Scaffold(
+              appBar: AppBar(
+                  centerTitle: true,
+                  title: Text('Edit collection'),
+                  leading: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })),
+              persistentFooterButtons: [
+                deleteButton(context, state.collection)
+              ],
+              body: state.collection != null ? SingleChildScrollView(
+                  padding: EdgeInsets.all(viewPadding),
+                  child: FormBuilder(
+                      key: _formKey,
+                      child: Column(children: [
+                        collectionPreview(state.collection!, state.collection?.colorPrimary, state.collection?.colorAccent, state.collection?.icon),
+                        FormBuilderTextField(
+                          name: "name",
+                          maxLength: 50,
+                          initialValue: state.collection?.name ?? '',
+                          decoration: const InputDecoration(labelText: 'Name'),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required()
+                          ]),
+                        ),
+                        FormBuilderTextField(
+                          name: "description",
+                          initialValue: state.collection?.description ?? '',
+                          decoration: const InputDecoration(labelText: 'Description'),
+                          maxLength: 250,
+                          maxLines: 5,
+                        ),
+                        _submitButton(context, state.collection!)
+                      ])
+                  )
+              ) : loadingWidget(ColorsPalette.algalFuel)
             );
-            }
           }
-        )
       )
     );
   }
@@ -155,6 +164,33 @@ class _CollectionEditViewState extends State<CollectionEditView> {
         }
       },
       child: collection.id != null ? Text("Save") : Text("Create")
+  );
+
+  Widget deleteButton(BuildContext context, Collection? collection) => OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(9.0),
+        ),
+        backgroundColor: ColorsPalette.desire,
+        foregroundColor: ColorsPalette.white,
+        side: BorderSide(color: ColorsPalette.desire),
+      ),
+      onPressed: (){
+        if(collection != null){
+          showDialog(
+              barrierDismissible: false, context: context, builder: (_) =>
+              CollectionDeleteDialog(collectionName: collection.name!)
+          ).then((val) {
+            if(val == 1){
+              context.read<CollectionEditCubit>().deleteCollection(collection.id!);
+            }
+          });
+        }
+      },
+      child: Row(mainAxisAlignment: MainAxisAlignment.center,children: [
+        Icon(Icons.delete),
+        Text('Delete collection')
+      ],)
   );
 
 }

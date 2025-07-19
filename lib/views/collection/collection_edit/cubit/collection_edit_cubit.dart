@@ -59,4 +59,13 @@ class CollectionEditCubit extends Cubit<CollectionEditState> {
       return emit(CollectionEditError(e.toString(), collection));
     }
   }
+  void deleteCollection(int id)async{
+    emit(CollectionEditLoading(state.collection));
+    try{
+      await _collectionRepository.deleteCollection(id);
+      emit(CollectionEditDelete(id));
+    }catch(e){
+      return emit(CollectionEditError(e.toString(), state.collection));
+    }
+  }
 }

@@ -41,4 +41,11 @@ class PropertiesViewCubit extends Cubit<PropertiesViewState> {
     }
   }
 
+  void removeProperty(int id){
+    emit(PropertiesViewLoading(state.properties));
+
+    state.properties!.removeWhere((p)=> p.id == id);
+    emit(PropertiesViewSuccess(state.properties!));
+  }
+
 }
