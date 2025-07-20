@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
@@ -161,7 +162,8 @@ class _CollectionViewState extends State<CollectionView> {
                                               itemCount: 5,
                                               itemSize: starSize,
                                               direction: Axis.horizontal,
-                                            )])
+                                            )]),
+                                            Text('${DateFormat.yMMMd().format(item.date!)}')
                                           ],),
                                         )),
                                       ]),
