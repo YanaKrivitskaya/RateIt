@@ -13,6 +13,7 @@ class CollectionProperty{
   final String? value;
   final bool? isFilter;
   final bool? isDropdown;
+  final bool? isRequired;
   final List<String>? dropdownOptions;
   final DateTime? createdDate;
   final DateTime? updatedDate;
@@ -26,6 +27,7 @@ class CollectionProperty{
     this.value,
     this.isFilter,
     this.isDropdown,
+    this.isRequired,
     this.dropdownOptions,
     this.createdDate,
     this.updatedDate,
@@ -39,6 +41,7 @@ class CollectionProperty{
       'comment': comment,
       'isFilter': isFilter,
       'isDropdown': isDropdown,
+      'isRequired': isRequired,
       'createdDate': createdDate?.microsecondsSinceEpoch,
       'updatedDate': updatedDate?.microsecondsSinceEpoch,
     };
@@ -54,6 +57,7 @@ class CollectionProperty{
       value: map['collection_item_value'] != null ? map['collection_item_value']['value'].toString() : null,
       isFilter: map['isFilter'],
       isDropdown: map['isDropdown'],
+      isRequired: map['isRequired'],
       dropdownOptions: map['dropdown_values'] != null ? List<String>.from(map['dropdown_values']?.map((d) => d['value'].toString())) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
@@ -73,6 +77,7 @@ class CollectionProperty{
     String? value,
     bool? isFilter,
     bool? isDropdown,
+    bool? isRequired,
     List<String>? dropdownOptions,
     DateTime? createdDate,
     DateTime? updatedDate,
@@ -86,6 +91,7 @@ class CollectionProperty{
       value: value ?? this.value,
       isFilter: isFilter ?? this.isFilter,
       isDropdown: isDropdown ?? this.isDropdown,
+      isRequired: isRequired ?? this.isRequired,
       dropdownOptions: dropdownOptions ?? this.dropdownOptions,
       createdDate: createdDate ?? this.createdDate,
       updatedDate: updatedDate ?? this.updatedDate,

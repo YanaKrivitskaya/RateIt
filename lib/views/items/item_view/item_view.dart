@@ -156,7 +156,7 @@ class _ItemViewState extends State<ItemView> {
                         return Column(children: [
                           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                             Text('$propertyName:', style: appTextStyle(weight: FontWeight.bold, fontSize: fontSize17)),
-                            Text('${property.value!} ${property.comment ?? ''}', style: appTextStyle(fontSize: fontSize17))
+                            Text('${property.value ?? ''} ${property.comment ?? ''}', style: appTextStyle(fontSize: fontSize17))
                           ],),
                           SizedBox(height: sizerHeightsm,)
                         ],);

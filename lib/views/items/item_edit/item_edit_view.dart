@@ -87,12 +87,16 @@ class _ItemEditViewState extends State<ItemEditView> {
                             List<CollectionProperty> properties = List.empty(growable: true);
 
                             for (var prop in item.properties!) {
-                              properties.add(prop.copyWith(value: _formKey.currentState?.fields[prop.name!]?.value.toString()));
+                              var value = _formKey.currentState?.fields[prop.name!]?.value;
+                              if(value != null && value.toString().isNotEmpty){
+                                properties.add(prop.copyWith(value: _formKey.currentState?.fields[prop.name!]?.value.toString()));
+                              }
                             }
                             CollectionItem newItem = item.copyWith(
                                 name: _formKey.currentState?.fields['name']?.value,
                                 description: _formKey.currentState?.fields['description']?.value,
                                 date: _formKey.currentState?.fields['date']?.value,
+                                rating: item.rating ?? 0,
                                 properties: properties
                             );
                             context.read<ItemEditCubit>().submitItem(widget.collectionId, newItem);
@@ -181,7 +185,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                         ),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                           RatingBar.builder(
-                            initialRating: item.rating ?? 0,
+                            initialRating: item.rating ?? 0.0,
                             minRating: 1,
                             direction: Axis.horizontal,
                             allowHalfRating: true,
@@ -232,8 +236,8 @@ class _ItemEditViewState extends State<ItemEditView> {
                                       hintText: propertyName,
                                     ),
                                     initialValue: property.dropdownOptions!.first,
-                                    validator: FormBuilderValidators.compose(
-                                        [FormBuilderValidators.required()]),
+                                    validator: property.isRequired! ? FormBuilderValidators.compose(
+                                        [FormBuilderValidators.required()]) : null,
                                     items: property.dropdownOptions!
                                         .map((value) => DropdownMenuItem(
                                       alignment: AlignmentDirectional.centerStart,
@@ -273,9 +277,9 @@ class _ItemEditViewState extends State<ItemEditView> {
                                     keyboardType: property.type == "Number" ?  TextInputType.number : TextInputType.text,
                                     initialValue: property.value,
                                     decoration: InputDecoration(labelText: label),
-                                    validator: FormBuilderValidators.compose([
+                                    validator: property.isRequired! ? FormBuilderValidators.compose([
                                       FormBuilderValidators.required()
-                                    ]),
+                                    ]) : null,
                                   ),
                                   SizedBox(height: sizerHeightMd)
                                 ]);
