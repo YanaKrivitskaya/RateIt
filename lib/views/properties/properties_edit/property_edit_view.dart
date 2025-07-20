@@ -87,6 +87,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                               type: _formKey.currentState?.fields['type']?.value,
                               comment: _formKey.currentState?.fields['comment']?.value,
                               isFilter: _formKey.currentState?.fields['isFilter']?.value,
+                              isRequired: _formKey.currentState?.fields['isRequired']?.value,
                               isDropdown: _formKey.currentState?.fields['isDropdown']?.value,
                             );
                             context.read<PropertyEditCubit>().submitProperty(widget.collectionId, newProperty);
@@ -137,13 +138,18 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                       decoration: const InputDecoration(labelText: 'Comment')
                     ),
                     FormBuilderCheckbox(
+                        name: 'isRequired',
+                        initialValue: property.isRequired ?? false,
+                        title: Text("Property is required", style: appTextStyle(fontSize: fontSize16),)
+                    ),
+                    FormBuilderCheckbox(
                       name: 'isFilter',
-                      initialValue: true,
+                      initialValue: property.isFilter ?? true,
                       title: Text("Property can be used as a filter", style: appTextStyle(fontSize: fontSize16),)
                     ),
                     FormBuilderCheckbox(
                         name: 'isDropdown',
-                        initialValue: property?.isDropdown ?? false,
+                        initialValue: property.isDropdown ?? false,
                         onChanged: (value) {
                           context.read<PropertyEditCubit>().toggleDropdown(value!);
                         },

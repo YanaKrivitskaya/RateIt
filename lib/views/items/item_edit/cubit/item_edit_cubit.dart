@@ -23,9 +23,9 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     emit(ItemEditInitial());
 
     List<AttachmentViewModel> files = List.empty(growable: true);
+    List<CollectionProperty>? properties = await _collectionRepository.getCollectionProperties(collectionId);
 
     if(item == null){
-      List<CollectionProperty>? properties = await _collectionRepository.getCollectionProperties(collectionId);
       CollectionItem newItem = CollectionItem(properties: properties);
       emit(ItemEditSuccess(newItem, files));
     }else{
@@ -40,8 +40,15 @@ class ItemEditCubit extends Cubit<ItemEditState> {
           }else{
             files.add(AttachmentViewModel(id: att.id!, source: att.source, state: AttState.keep));
           }
-
           //item.attachments![index] = att;
+        }
+      }
+      if(item.properties != null && properties.isNotNullOrEmpty){
+        for(var prop in properties!){
+          var p = item.properties!.where((p) => p.id == prop.id);
+          if(p.isEmpty){
+            item.properties!.add(prop);
+          }
         }
       }
 
@@ -81,11 +88,20 @@ class ItemEditCubit extends Cubit<ItemEditState> {
           ? await _collectionRepository.updateItem(collectionId, item)
           : await _collectionRepository.createItem(collectionId, item);
 
+      List<CollectionProperty> newProps = List.empty(growable: true);
+      List<CollectionProperty> updProps = List.empty(growable: true);
+
       if(newItem != null){
         if(item.properties != null){
-          item.id != null
-              ? await _collectionRepository.updatePropertyValues(collectionId, item.properties!)
-              : await _collectionRepository.createPropertyValues(collectionId, newItem.id!, item.properties!);
+          for(var prop in item.properties!){
+            if(prop.valueId != null){
+              updProps.add(prop);
+            }else{
+              newProps.add(prop);
+            }
+          }
+          await _collectionRepository.updatePropertyValues(collectionId, updProps);
+          await _collectionRepository.createPropertyValues(collectionId, newItem.id!, newProps);
         }
 
         if(state.files.isNotNullOrEmpty){

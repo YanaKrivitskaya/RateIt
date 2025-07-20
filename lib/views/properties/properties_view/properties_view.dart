@@ -98,6 +98,7 @@ class _PropertiesViewState extends State<PropertiesView> {
                             children: <TextSpan>[
                               property.isDropdown! ? TextSpan(text: ', dropdown') : TextSpan(),
                               property.comment != null ? TextSpan(text: ', ${property.comment}'): TextSpan(),
+                              property.isRequired! ? TextSpan(text: ', required') : TextSpan(),
                             ]
                           )
                         )

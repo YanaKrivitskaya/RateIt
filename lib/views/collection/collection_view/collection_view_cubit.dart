@@ -64,8 +64,8 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
           Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
           att.source = imageSource;
           newItem.attachments!.add(att);
-          state.collection!.items?.add(newItem);
         }
+        state.collection!.items?.add(newItem);
       }
       emit(CollectionViewSuccess(state.collection!));
     }
