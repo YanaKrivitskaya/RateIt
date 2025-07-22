@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rateit/database/collection_repository.dart';
 import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/custom_exception.dart';
 
 part 'property_edit_state.dart';
 
@@ -12,14 +13,23 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
         _collectionRepository = CollectionRepository(),
         super(PropertyEditInitial());
 
-  void loadProperty(CollectionProperty? property){
+  void loadProperty(CollectionProperty? property) async{
     emit(PropertyEditInitial());
 
     if(property == null){
       CollectionProperty newProp = CollectionProperty(dropdownOptions: List.empty(growable: true));
       emit(PropertyEditSuccess(newProp, false));
     }else{
-      emit(PropertyEditSuccess(property, property.isDropdown ?? false));
+      try{
+        CollectionProperty? newProp = await _collectionRepository.getPropertyExpanded(property.id!);
+        if(newProp != null){
+          emit(PropertyEditSuccess(newProp, newProp.isDropdown!));
+        }else{
+          throw BadRequestException("Something went wrong :(");
+        }
+      }catch(e){
+        return emit(PropertyEditError(e.toString(), property));
+      }
     }
   }
 
@@ -62,7 +72,7 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
         await _collectionRepository.updateDropdownValues(collectionId, newProperty!.id!, property.isDropdown! ? property.dropdownOptions ?? List.empty() : List.empty());
       }
 
-      emit(PropertyEditCreated(newProperty));
+      emit(PropertyEditCreated(property.copyWith(id: newProperty!.id!)));
     }catch(e){
       return emit(PropertyEditError(e.toString(), property));
     }

@@ -47,6 +47,17 @@ class CollectionRepository {
     return property;
   }
 
+  Future<CollectionProperty?> getPropertyExpanded(int propertyId) async{
+    if (kDebugMode) {
+      print("getPropertyExpanded");
+    }
+    final response = await apiService.getSecure("${baseUrl}properties/$propertyId");
+
+    var property = response["property"] != null ?
+    CollectionProperty.fromMap(response["property"]) : null;
+    return property;
+  }
+
   Future<Collection?> getCollectionById(int collectionId) async{
     if (kDebugMode) {
       print("getCollectionById");
