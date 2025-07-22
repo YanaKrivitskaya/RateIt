@@ -121,35 +121,38 @@ class _ItemEditViewState extends State<ItemEditView> {
                                   AttachmentViewModel att = state.files![index];
                                   if(att.state == AttState.delete) {
                                     return SizedBox();
-                                  } else {return Stack(
-                                    children: [
-                                      att.id != null ? Image.memory(att.source!) : Image.file(File(att.file!.path)),
-                                      PositionedDirectional(
-                                          top: 0,
-                                          end: 0,
-                                          child:InkWell(
-                                            onTap: (){
-                                              context.read<ItemEditCubit>().removeImage(index);
-                                            },
-                                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                                            child: Container(
-                                              margin: const EdgeInsets.all(3),
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.withValues(alpha: .7),
-                                                shape: BoxShape.circle,
+                                  } else {return Row(children: [
+                                    Stack(
+                                      children: [
+                                        att.id != null ? Image.memory(att.source!) : Image.file(File(att.file!.path)),
+                                        PositionedDirectional(
+                                            top: 0,
+                                            end: 0,
+                                            child:InkWell(
+                                              onTap: (){
+                                                context.read<ItemEditCubit>().removeImage(index);
+                                              },
+                                              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                              child: Container(
+                                                margin: const EdgeInsets.all(3),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.withValues(alpha: .7),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                alignment: Alignment.center,
+                                                height: 22,
+                                                width: 22,
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  size: 18,
+                                                  color: Colors.white,
+                                                ),
                                               ),
-                                              alignment: Alignment.center,
-                                              height: 22,
-                                              width: 22,
-                                              child: const Icon(
-                                                Icons.close,
-                                                size: 18,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ))
-                                    ],
-                                  );}
+                                            ))
+                                      ],
+                                    ),
+                                    SizedBox(width: sizerWidthsm)
+                                  ],) ;}
 
                                 }),
                                 (state.files!.where((f)=> f.state != AttState.delete).length < maxImages) ? InkWell(
