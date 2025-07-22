@@ -9,7 +9,7 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/views/collection/collection_edit/collection_delete_dialog.dart';
+import 'package:rateit/views/collection/collection_settings/collection_delete_dialog.dart';
 import 'package:rateit/views/collection/collection_edit/cubit/collection_edit_cubit.dart';
 
 class CollectionEditView extends StatefulWidget {
@@ -67,15 +67,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
             Navigator.pop(context, state.collection!);
           });
         }
-        if(state is CollectionEditDelete){
-          var duration = Duration(seconds: 2);
-          globalScaffoldMessenger.currentState!
-            ..hideCurrentSnackBar()
-            ..showSnackBar(customSnackBar(SnackBarState.success, null, duration));
-          Future.delayed(const Duration(seconds: 2), () {
-            Navigator.pop(context, state.id);
-          });
-        }
+
       },
       child: BlocBuilder<CollectionEditCubit, CollectionEditState>(
           builder: (context, state){
@@ -88,9 +80,6 @@ class _CollectionEditViewState extends State<CollectionEditView> {
                       onPressed: () {
                         Navigator.pop(context);
                       })),
-              persistentFooterButtons: [
-                deleteButton(context, state.collection)
-              ],
               body: state.collection != null ? SingleChildScrollView(
                   padding: EdgeInsets.all(viewPadding),
                   child: FormBuilder(
@@ -166,31 +155,6 @@ class _CollectionEditViewState extends State<CollectionEditView> {
       child: collection.id != null ? Text("Save") : Text("Create")
   );
 
-  Widget deleteButton(BuildContext context, Collection? collection) => OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(9.0),
-        ),
-        backgroundColor: ColorsPalette.desire,
-        foregroundColor: ColorsPalette.white,
-        side: BorderSide(color: ColorsPalette.desire),
-      ),
-      onPressed: (){
-        if(collection != null){
-          showDialog(
-              barrierDismissible: false, context: context, builder: (_) =>
-              CollectionDeleteDialog(collectionName: collection.name!)
-          ).then((val) {
-            if(val == 1){
-              context.read<CollectionEditCubit>().deleteCollection(collection.id!);
-            }
-          });
-        }
-      },
-      child: Row(mainAxisAlignment: MainAxisAlignment.center,children: [
-        Icon(Icons.delete),
-        Text('Delete collection')
-      ],)
-  );
+
 
 }
