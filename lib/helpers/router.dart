@@ -11,6 +11,8 @@ import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
 import 'package:rateit/views/collection/collection_edit/cubit/collection_edit_cubit.dart';
 import 'package:rateit/views/collection/collection_edit/collection_edit_view.dart';
+import 'package:rateit/views/collection/collection_settings/collection_settings_view.dart';
+import 'package:rateit/views/collection/collection_settings/cubit/collection_settings_cubit.dart';
 import 'package:rateit/views/collection/collection_view/collection_view.dart';
 import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
 import 'package:rateit/views/home/home.page.dart';
@@ -115,6 +117,15 @@ class RouteGenerator {
           }
           return _errorRoute();
         }
+      case collectionSettingsRoute:
+        if (args is Collection) {
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider<CollectionSettingsCubit>(
+              create: (context) => CollectionSettingsCubit(args),
+              child: CollectionSettingsView(),
+            ),
+          );}
+        return _errorRoute();
       default:
         return _errorRoute();
     }

@@ -57,10 +57,10 @@ class _CollectionViewState extends State<CollectionView> {
                           }),
                       actions: [
                         IconButton(
-                            icon: Icon(Icons.edit),
+                            icon: Icon(Icons.settings),
                             onPressed: () {
                               if(collection != null){
-                                Navigator.pushNamed(context, editCollectionRoute, arguments: collection).then((value)
+                                Navigator.pushNamed(context, collectionSettingsRoute, arguments: collection).then((value)
                                 {
                                   if(value != null){
                                     if(value is Collection){
@@ -72,13 +72,6 @@ class _CollectionViewState extends State<CollectionView> {
                                     }
                                   }
                                 });
-                              }
-                            }),
-                        IconButton(
-                            icon: Icon(Icons.settings),
-                            onPressed: () {
-                              if(collection != null){
-                                Navigator.pushNamed(context, viewPropertiesRoute, arguments: collection.id);
                               }
                               //Navigator.pop(context);
                             })
