@@ -9,10 +9,12 @@ import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
+import 'package:rateit/models/args_models/order_options_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
+import 'package:rateit/views/collection/collection_view/collection_order_dialog.dart';
+import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
 
 class CollectionView extends StatefulWidget {
   const CollectionView({super.key});
@@ -57,6 +59,20 @@ class _CollectionViewState extends State<CollectionView> {
                           }),
                       actions: [
                         IconButton(
+                            icon: Icon(Icons.sort),
+                            onPressed: (){
+                              if(collection != null){
+                                showDialog(
+                                    barrierDismissible: false, context: context, builder: (_) =>
+                                    CollectionOrderDialog()
+                                ).then((val) {
+                                  if(val is OrderOptionsArgs){
+                                    context.read<CollectionViewCubit>().updateOrder(val);
+                                  }
+                                });
+                              }
+                            }),
+                        IconButton(
                             icon: Icon(Icons.settings),
                             onPressed: () {
                               if(collection != null){
@@ -73,7 +89,6 @@ class _CollectionViewState extends State<CollectionView> {
                                   }
                                 });
                               }
-                              //Navigator.pop(context);
                             })
                       ]
                   ),
@@ -102,6 +117,7 @@ class _CollectionViewState extends State<CollectionView> {
                         ), child:
                           ListView.builder(
                             shrinkWrap: true,
+                            reverse: state.orderOptions != null && state.orderOptions!.direction == "Asc",
                             //physics: NeverScrollableScrollPhysics(),
                             itemCount: collection.items!.length,
                             itemBuilder: (context, position){

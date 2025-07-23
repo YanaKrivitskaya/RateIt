@@ -14,7 +14,7 @@ import 'package:rateit/views/collection/collection_edit/collection_edit_view.dar
 import 'package:rateit/views/collection/collection_settings/collection_settings_view.dart';
 import 'package:rateit/views/collection/collection_settings/cubit/collection_settings_cubit.dart';
 import 'package:rateit/views/collection/collection_view/collection_view.dart';
-import 'package:rateit/views/collection/collection_view/collection_view_cubit.dart';
+import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
 import 'package:rateit/views/home/home.page.dart';
 import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
 import 'package:rateit/views/items/item_edit/image_crop_view.dart';

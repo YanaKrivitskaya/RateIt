@@ -3,22 +3,16 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 
-class CollectionDeleteDialog extends StatefulWidget {
+class CollectionDeleteDialog extends StatelessWidget {
   final String collectionName;
   const CollectionDeleteDialog({required this.collectionName});
-
-  @override
-  _CollectionDeleteDialogState createState() => _CollectionDeleteDialogState();
-}
-
-class _CollectionDeleteDialogState extends State<CollectionDeleteDialog> {
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       actionsAlignment: MainAxisAlignment.spaceBetween,
       insetPadding: EdgeInsets.all(viewPadding),
-      title: Text("Delete ${widget.collectionName}?"),
+      title: Text("Delete $collectionName?"),
       content: SizedBox(
           width: fullWidth,
           child: SingleChildScrollView(
@@ -46,3 +40,4 @@ class _CollectionDeleteDialogState extends State<CollectionDeleteDialog> {
     );
   }
 }
+
