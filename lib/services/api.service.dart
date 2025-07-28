@@ -9,15 +9,15 @@ import 'package:rateit/models/api_models/api_attachments.model.dart';
 import 'package:rateit/models/custom_exception.dart';
 import 'package:rateit/services/secure_storage.service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-//import 'package:image_cropper/image_crop_view.dart';
+//import 'package:image_cropper/image_crop.view.dart';
 
 class ApiService {
   static ApiService? _instance;
 
   // ANCHOR API URLs
-  static String _baseUrl = "http://10.0.2.2:8080/"; //emulator
-  //static final String _baseUrl = "http://192.168.7.109:8080/"; // local IP
-  //static String _baseUrl = "http://192.168.7.200:3002/"; // Local NAS
+  //static String _baseUrl = "http://10.0.2.2:8080/"; //emulator
+  static final String _baseUrl = "http://192.168.7.104:8080/"; // local IP
+  //static String _baseUrl = "http://192.168.7.200:3003/"; // Local NAS
   //static String _baseUrl = "http://178.124.197.224:8002/"; // External NAS
   static SecureStorage? _storage;
   static String? _accessToken;
@@ -35,6 +35,7 @@ class ApiService {
     if(kIsWeb){
       WebBrowserInfo webInfo = await deviceInfoPlugin.webBrowserInfo;
       _deviceId = webInfo.userAgent;
+      print(_deviceId);
     }else{
       if(Platform.isAndroid){
         await deviceInfoPlugin.androidInfo.then((data) => _deviceId = data.id);

@@ -7,7 +7,7 @@ import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/services/api.service.dart';
 import 'package:rateit/views/auth/cubit/auth_cubit.dart';
-import 'package:rateit/views/auth/login/login_page.dart';
+import 'package:rateit/views/auth/login/login.page.dart';
 import 'package:rateit/views/home/home.page.dart';
 import 'package:sizer/sizer.dart';
 

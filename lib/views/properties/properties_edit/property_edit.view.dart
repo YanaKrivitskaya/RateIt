@@ -7,8 +7,8 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection_property.model.dart';
-import 'package:rateit/views/properties/properties_edit/property_delete_dialog.dart';
-import 'package:rateit/views/properties/properties_edit/property_dropdown_dialog.dart';
+import 'package:rateit/views/properties/properties_edit/property_delete.dialog.dart';
+import 'package:rateit/views/properties/properties_edit/property_dropdown.dialog.dart';
 
 import 'cubit/property_edit_cubit.dart';
 
@@ -82,6 +82,9 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                           var isFormValid = _formKey.currentState!.validate();
 
                           if(isFormValid){
+                            String? minValue = _formKey.currentState?.fields['minValue']?.value;
+                            String? maxValue = _formKey.currentState?.fields['maxValue']?.value;
+
                             CollectionProperty newProperty = property.copyWith(
                               name: _formKey.currentState?.fields['name']?.value,
                               type: _formKey.currentState?.fields['type']?.value,
@@ -89,6 +92,8 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                               isFilter: _formKey.currentState?.fields['isFilter']?.value,
                               isRequired: _formKey.currentState?.fields['isRequired']?.value,
                               isDropdown: _formKey.currentState?.fields['isDropdown']?.value,
+                              minValue: minValue != null && minValue.isNotEmpty ? int.tryParse(minValue) : 0,
+                              maxValue: maxValue != null && maxValue.isNotEmpty ? int.tryParse(maxValue) : null
                             );
                             context.read<PropertyEditCubit>().submitProperty(widget.collectionId, newProperty);
                         }}
@@ -96,9 +101,9 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                       })
                 ]
             ),
-            persistentFooterButtons: [
+            persistentFooterButtons: state.property?.id != null ? [
                 deleteButton(context, state.property)
-            ],
+            ] : [],
             body: property != null ? Container(
               padding: EdgeInsets.symmetric(horizontal: borderPadding),
               child: SingleChildScrollView(
@@ -130,7 +135,29 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                         child: Text(type),
                       )).toList(),                      
                       valueTransformer: (val) => val?.toString(),
+                      onChanged: (val){
+                        context.read<PropertyEditCubit>().updatePropertyType(val!);
+                      },
                     ),
+                    Visibility(
+                      visible: property.type == "Number",
+                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                        //Text("Min"),
+                        SizedBox(width: width40, child:
+                          FormBuilderTextField(
+                            name: "minValue",
+                            initialValue: property.minValue != null ? property.minValue.toString() : "0",
+                            decoration: const InputDecoration(labelText: 'Min'),
+                            keyboardType: TextInputType.number,
+                          )),
+                        SizedBox(width: width40, child:
+                        FormBuilderTextField(
+                          name: "maxValue",
+                          initialValue: property.maxValue != null ? property.maxValue.toString() : "",
+                          decoration: const InputDecoration(labelText: 'Max'),
+                          keyboardType: TextInputType.number,
+                        )),
+                      ],)),
                     FormBuilderTextField(
                       name: "comment",
                       maxLength: 50,

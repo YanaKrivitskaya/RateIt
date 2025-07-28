@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,7 @@ import 'package:rateit/models/args_models/order_options_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/views/collection/collection_view/collection_order_dialog.dart';
+import 'package:rateit/views/collection/collection_view/collection_order.dialog.dart';
 import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
 
 class CollectionView extends StatefulWidget {
@@ -58,6 +59,20 @@ class _CollectionViewState extends State<CollectionView> {
                             Navigator.pushNamedAndRemoveUntil(context, homeRoute, (route) => false);
                           }),
                       actions: [
+                        IconButton(
+                            icon: Icon(Icons.filter_alt),
+                            onPressed: (){
+                              if(collection != null && collection.items.isNotNullOrEmpty){
+                                Navigator.pushNamed(context, collectionFiltersRoute, arguments: collection).then((value)
+                                {
+                                  if(value is Collection){
+                                    context.read<CollectionViewCubit>().updateCollectionItems(value);
+                                  }else if(value is int && value == 0){
+                                    context.read<CollectionViewCubit>().resetFilters();
+                                  }
+                                });
+                              }
+                            }),
                         IconButton(
                             icon: Icon(Icons.sort),
                             onPressed: (){
@@ -111,7 +126,14 @@ class _CollectionViewState extends State<CollectionView> {
                   padding: EdgeInsets.only(left: viewPadding, right: viewPadding, bottom: formBottomPadding),
                   child: Column(children: [
                     Text(collection.description ?? ''),
-                    collection.items.isNotNullOrEmpty ? SingleChildScrollView(
+                    FormBuilderTextField(
+                        name: "name",
+                        decoration: const InputDecoration(labelText: 'Search by name', icon: Icon(Icons.search)),
+                        onChanged: (val){
+                          context.read<CollectionViewCubit>().searchByName(val);
+                        },
+                    ),
+                    state.filteredItems.isNotNullOrEmpty ? SingleChildScrollView(
                         child: Container(constraints: BoxConstraints(
                           maxHeight: scrollViewHeightLg,
                         ), child:
@@ -119,9 +141,9 @@ class _CollectionViewState extends State<CollectionView> {
                             shrinkWrap: true,
                             reverse: state.orderOptions != null && state.orderOptions!.direction == "Asc",
                             //physics: NeverScrollableScrollPhysics(),
-                            itemCount: collection.items!.length,
+                            itemCount: state.filteredItems!.length,
                             itemBuilder: (context, position){
-                              final CollectionItem item = collection.items![position];
+                              final CollectionItem item = state.filteredItems![position];
                               final att = item.attachments?.firstOrNull;
                               return Card(
                                 child: InkWell(

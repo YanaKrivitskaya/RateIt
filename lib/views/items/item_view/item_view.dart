@@ -15,7 +15,7 @@ import 'package:rateit/models/attachment.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/items/item_view/cubit/item_view_cubit.dart';
-import 'package:rateit/views/items/item_view/item_delete_dialog.dart';
+import 'package:rateit/views/items/item_view/item_delete.dialog.dart';
 import 'package:rateit/views/items/item_view/items_image_provider.dart';
 
 class ItemView extends StatefulWidget {

@@ -34,28 +34,33 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
             }
           }
         }
-        emit(CollectionViewSuccess(collection, OrderOptionsArgs("Name", "Desc")));
+        emit(CollectionViewSuccess(collection, collection.items,
+            OrderOptionsArgs("Name", "Desc")));
       }
     }catch(e){
       print(e.toString());
-      return emit(CollectionViewError(e.toString(), null, null));
+      return emit(CollectionViewError(e.toString(), null, null, null));
     }
   }
 
   void updateCollectionDetails(Collection collection) async{
-    emit(CollectionViewLoading(state.collection, state.orderOptions));
+    emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions));
 
     try{
       Collection updCollection = state.collection!.copyWith(name: collection.name, description: collection.description, icon: collection.icon);
-      emit(CollectionViewSuccess(updCollection, state.orderOptions));
+      emit(CollectionViewSuccess(updCollection, state.filteredItems, state.orderOptions!));
     }catch(e){
       print(e.toString());
-      return emit(CollectionViewError(e.toString(), state.collection, state.orderOptions));
+      return emit(CollectionViewError(e.toString(), state.collection, state.filteredItems, state.orderOptions));
     }
   }
 
+  void updateCollectionItems(Collection collection) async{
+    emit(CollectionViewSuccess(state.collection!, collection.items, state.orderOptions!));
+  }
+
   void addNewItem(int collectionId, CollectionItem? item) async{
-    emit(CollectionViewLoading(state.collection, state.orderOptions));
+    emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions));
 
     try{
       if(item != null) {
@@ -68,39 +73,57 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
         }
         state.collection!.items?.add(newItem);
       }
-      emit(CollectionViewSuccess(state.collection!, state.orderOptions));
+      emit(CollectionViewSuccess(state.collection!, state.collection!.items!, state.orderOptions!));
     }
     catch(e){
       print(e.toString());
-      return emit(CollectionViewError(e.toString(), state.collection, state.orderOptions));
+      return emit(CollectionViewError(e.toString(), state.collection, state.filteredItems, state.orderOptions));
     }
   }
 
   void updateItem(CollectionItem item, int position){
-    emit(CollectionViewLoading(state.collection, state.orderOptions));
+    emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions));
 
-    state.collection!.items![position] = item;
+    state.filteredItems![position] = item;
+    int index = state.collection!.items!.indexWhere((i) => i.id == item.id);
+    state.collection!.items![index] = item;
 
-    emit(CollectionViewSuccess(state.collection!, state.orderOptions));
+    emit(CollectionViewSuccess(state.collection!, state.filteredItems, state.orderOptions!));
   }
 
   void removeItem(int id){
-    emit(CollectionViewLoading(state.collection, state.orderOptions));
+    emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions));
     state.collection!.items!.removeWhere((i)=> i.id == id);
-    emit(CollectionViewSuccess(state.collection!, state.orderOptions));
+    emit(CollectionViewSuccess(state.collection!, state.collection!.items!, state.orderOptions!));
   }
 
   void updateOrder(OrderOptionsArgs orderOptions){
-    emit(CollectionViewLoading(state.collection, state.orderOptions));
-    if(state.collection!.items.isNotNullOrEmpty){
+    emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions));
+    if(state.filteredItems.isNotNullOrEmpty){
       switch(orderOptions.field){
-        case "Rating": state.collection!.items!.sort((a, b) => a.rating!.compareTo(b.rating!));
-        case "Date": state.collection!.items!.sort((a, b) => a.date!.millisecondsSinceEpoch.compareTo(b.date!.millisecondsSinceEpoch));
-        case "Date Modified": state.collection!.items!.sort((a, b) => a.updatedDate!.millisecondsSinceEpoch.compareTo(b.updatedDate!.millisecondsSinceEpoch));
-        default: state.collection!.items!.sort((a, b) => a.name!.toUpperCase().compareTo(b.name!.toUpperCase()));
+        case "Rating": state.filteredItems!.sort((a, b) => a.rating!.compareTo(b.rating!));
+        case "Date": state.filteredItems!.sort((a, b) => a.date!.millisecondsSinceEpoch.compareTo(b.date!.millisecondsSinceEpoch));
+        case "Date Modified": state.filteredItems!.sort((a, b) => a.updatedDate!.millisecondsSinceEpoch.compareTo(b.updatedDate!.millisecondsSinceEpoch));
+        default: state.filteredItems!.sort((a, b) => a.name!.toUpperCase().compareTo(b.name!.toUpperCase()));
       }
     }
-    emit(CollectionViewSuccess(state.collection!, orderOptions));
+    emit(CollectionViewSuccess(state.collection!, state.filteredItems, orderOptions));
+  }
+
+  void searchByName(String? nameValue){
+    //emit(CollectionViewLoading(state.collection, state.orderOptions));
+    if(nameValue != null){
+      if(nameValue != ""){
+        List<CollectionItem> items = state.filteredItems!.where((i) => i.name!.toUpperCase().contains(nameValue.toUpperCase())).toList();
+        emit(CollectionViewSuccess(state.collection!, items, state.orderOptions!));
+      }else{
+        emit(CollectionViewSuccess(state.collection!, state.collection!.items, state.orderOptions!));
+      }
+    }
+  }
+
+  void resetFilters(){
+    emit(CollectionViewSuccess(state.collection!, state.collection!.items, state.orderOptions!));
   }
 
 }

@@ -7,26 +7,27 @@ import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/args_models/property_edit_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/views/auth/otp/cubit/otp_cubit.dart';
+import 'package:rateit/views/auth/otp/otp_verification.view.dart';
 import 'package:rateit/views/collection/collection_edit/cubit/collection_edit_cubit.dart';
-import 'package:rateit/views/collection/collection_edit/collection_edit_view.dart';
-import 'package:rateit/views/collection/collection_settings/collection_settings_view.dart';
+import 'package:rateit/views/collection/collection_edit/collection_edit.view.dart';
+import 'package:rateit/views/collection/collection_filters/collection_filters.view.dart';
+import 'package:rateit/views/collection/collection_filters/cubit/collection_filters_cubit.dart';
+import 'package:rateit/views/collection/collection_settings/collection_settings.view.dart';
 import 'package:rateit/views/collection/collection_settings/cubit/collection_settings_cubit.dart';
-import 'package:rateit/views/collection/collection_view/collection_view.dart';
+import 'package:rateit/views/collection/collection_view/collection.view.dart';
 import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
 import 'package:rateit/views/home/home.page.dart';
 import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
-import 'package:rateit/views/items/item_edit/image_crop_view.dart';
-import 'package:rateit/views/items/item_edit/item_edit_view.dart';
+import 'package:rateit/views/items/item_edit/image_crop.view.dart';
+import 'package:rateit/views/items/item_edit/item_edit.view.dart';
 import 'package:rateit/views/items/item_view/cubit/item_view_cubit.dart';
 import 'package:rateit/views/items/item_view/item_view.dart';
-import 'package:rateit/views/properties/properties_edit/property_edit_view.dart';
+import 'package:rateit/views/properties/properties_edit/property_edit.view.dart';
 import 'package:rateit/views/properties/properties_edit/cubit/property_edit_cubit.dart';
-import 'package:rateit/views/properties/properties_view/properties_view.dart';
-import 'package:rateit/views/properties/properties_view/properties_view_cubit.dart';
+import 'package:rateit/views/properties/properties_view/cubit/properties_view_cubit.dart';
+import 'package:rateit/views/properties/properties_view/properties.view.dart';
 
-import '../views/auth/otp/otp_verification_view.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -126,6 +127,18 @@ class RouteGenerator {
             ),
           );}
         return _errorRoute();
+      case collectionFiltersRoute:
+        {
+          if (args is Collection) {
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider<CollectionFiltersCubit>(
+                create: (context) => CollectionFiltersCubit(args)..getProperties(),
+                child: CollectionFiltersView(),
+              ),
+            );
+          }
+          return _errorRoute();
+        }
       default:
         return _errorRoute();
     }
