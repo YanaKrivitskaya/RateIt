@@ -16,8 +16,8 @@ class ApiService {
 
   // ANCHOR API URLs
   //static String _baseUrl = "http://10.0.2.2:8080/"; //emulator
-  static final String _baseUrl = "http://192.168.7.104:8080/"; // local IP
-  //static String _baseUrl = "http://192.168.7.200:3003/"; // Local NAS
+  //static final String _baseUrl = "http://192.168.7.104:8080/"; // local IP
+  static String _baseUrl = "http://192.168.7.200:3003/"; // Local NAS
   //static String _baseUrl = "http://178.124.197.224:8002/"; // External NAS
   static SecureStorage? _storage;
   static String? _accessToken;

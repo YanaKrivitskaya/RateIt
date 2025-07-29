@@ -68,8 +68,8 @@ class _HomeViewState extends State<HomeView> {
                           onPressed: () {
                             Navigator.pushNamed(context, editCollectionRoute).then((value)
                             {
-                              if(value != null && value is int){
-                                context.read<HomeCubit>().getCollectionBasic(value);
+                              if(value != null && value is Collection){
+                                context.read<HomeCubit>().getCollectionBasic(value.id!);
                               }
                             });
                           },
