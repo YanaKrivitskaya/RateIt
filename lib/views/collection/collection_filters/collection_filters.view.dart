@@ -11,6 +11,7 @@ import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/filter.model.dart';
 import 'package:rateit/views/collection/collection_filters/cubit/collection_filters_cubit.dart';
 
 class CollectionFiltersView extends StatefulWidget {
@@ -28,11 +29,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
   Widget build(BuildContext context) {
     return BlocListener<CollectionFiltersCubit, CollectionFiltersState>(
         listener: (context, state){
-          if(state is CollectionFiltersApplied){
-            globalScaffoldMessenger.currentState!
-                .hideCurrentSnackBar();
-            Navigator.pop(context, state.collection);
-          }
+
         },
         child: BlocBuilder<CollectionFiltersCubit, CollectionFiltersState>(
           builder: (context, state){
@@ -43,12 +40,12 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                   leading: IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context, state.filterModel);
                       })),
               persistentFooterButtons: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
                   resetButton(context),
-                  submitButton(context, state.collection, state.properties)
+                  submitButton(context, state.filterModel)
                 ],)
 
               ],
@@ -64,7 +61,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                   min: 0.0,
                   max: 5.0,
                   divisions: 10,
-                  initialValue: RangeValues(0.0, 5.0),
+                  initialValue: state.filterModel?.rating ?? RangeValues(0.0, 5.0),
                   maxValueWidget: (max) => TextButton(
                     onPressed: () {
                       _formKey.currentState?.patchValue({
@@ -78,12 +75,12 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                 ),
                 SizedBox(height: sizerHeightMd),
                 state is CollectionFiltersSuccess ? 
-                (state.properties != null) ? ListView.builder(
+                (state.filterModel!.properties != null) ? ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: state.properties!.length,
+                    itemCount: state.filterModel!.properties!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      var property = state.properties![index];
+                      var property = state.filterModel!.properties![index];
                       String propertyName = property.name!;
                       String label = property.comment != null ? "$propertyName, ${property.comment}" : propertyName;
                       if(property.isDropdown! && property.dropdownOptions.isNotNullOrEmpty){
@@ -168,7 +165,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
     );
   }
 
-  Widget submitButton(BuildContext context, Collection collection, List<CollectionProperty>? props) => OutlinedButton(
+  Widget submitButton(BuildContext context, FilterModel? filterModel) => OutlinedButton(
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(9.0),
@@ -178,10 +175,10 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
         side: BorderSide(color: ColorsPalette.algalFuel),
       ),
       onPressed: (){
-        if(collection != null){
+        if(filterModel != null){
           var isFormValid = _formKey.currentState!.validate();
-
           if(isFormValid){
+            List<CollectionProperty>? props = filterModel.properties;
             if(props != null && props.isNotEmpty){
               List<CollectionProperty> properties = List.empty(growable: true);
 
@@ -196,14 +193,17 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                   var value = _formKey.currentState?.fields[prop.name!]?.value;
                   if(value != null && value.toString().isNotEmpty){
                     properties.add(prop.copyWith(value: _formKey.currentState?.fields[prop.name!]?.value.toString()));
+                  }else{
+                    properties.add(prop);
                   }
                 }
+
               }
 
               var date =  _formKey.currentState?.fields['date']?.value;
               var ratingRange = _formKey.currentState?.fields['rating']?.value;
 
-              context.read<CollectionFiltersCubit>().applyFilters(collection, properties, date, ratingRange);
+              Navigator.pop(context, filterModel.copyWith(rating: ratingRange, properties: properties));
             }
 
           }
@@ -222,7 +222,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
         side: BorderSide(color: ColorsPalette.desire),
       ),
       onPressed: (){
-        Navigator.pop(context, 0);
+        Navigator.pop(context, null);
       },
       child: Text('Reset filters')
   );

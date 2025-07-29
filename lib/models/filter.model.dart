@@ -8,5 +8,24 @@ class FilterModel{
   final DateTime? dateTo;
   final List<CollectionProperty>? properties;
 
-  FilterModel(this.rating, this.dateFrom, this.dateTo, this.properties);
+  const FilterModel({
+    this.rating,
+    this.dateFrom,
+    this.dateTo,
+    this.properties,
+  });
+
+  FilterModel copyWith({
+    RangeValues? rating,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+    List<CollectionProperty>? properties,
+  }) {
+    return FilterModel(
+      rating: rating ?? this.rating,
+      dateFrom: dateFrom ?? this.dateFrom,
+      dateTo: dateTo ?? this.dateTo,
+      properties: properties ?? this.properties,
+    );
+  }
 }

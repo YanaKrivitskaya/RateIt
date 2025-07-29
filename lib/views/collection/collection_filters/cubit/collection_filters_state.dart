@@ -2,19 +2,17 @@ part of 'collection_filters_cubit.dart';
 
 @immutable
 sealed class CollectionFiltersState {
-  final Collection collection;
-  final List<CollectionProperty>? properties;
+  final int? collectionId;
+  final FilterModel? filterModel;
 
-  const CollectionFiltersState(this.collection, this.properties);
+  const CollectionFiltersState(this.collectionId, this.filterModel);
 
   @override
-  List<Object?> get props => [collection, properties];
+  List<Object?> get props => [collectionId, filterModel];
 }
 
 final class CollectionFiltersInitial extends CollectionFiltersState {
-  final Collection collection;
-
-  const CollectionFiltersInitial(this.collection):super(collection, null);
+  const CollectionFiltersInitial():super(null, null);
 }
 
 class CollectionFiltersLoading extends CollectionFiltersState{
@@ -22,23 +20,23 @@ class CollectionFiltersLoading extends CollectionFiltersState{
 }
 
 class CollectionFiltersSuccess extends CollectionFiltersState{
-  final Collection collection;
-  final List<CollectionProperty>? properties;
+  final int? collectionId;
+  final FilterModel? filterModel;
 
-  const CollectionFiltersSuccess(this.collection, this.properties): super(collection, properties);
+  const CollectionFiltersSuccess(this.collectionId, this.filterModel): super(collectionId, filterModel);
 }
 
-class CollectionFiltersApplied extends CollectionFiltersState{
+/*class CollectionFiltersApplied extends CollectionFiltersState{
   final Collection collection;
   final List<CollectionProperty>? properties;
 
   const CollectionFiltersApplied(this.collection, this.properties): super(collection, properties);
-}
+}*/
 
 class CollectionFiltersError extends CollectionFiltersState{
   final String error;
-  const CollectionFiltersError(this.error, super.collection, super.properties);
+  const CollectionFiltersError(this.error, super.collectionId, super.filterModel);
 
-  List<Object?> get props => [super.collection, super.properties, error];
+  List<Object?> get props => [super.collectionId, super.filterModel, error];
 }
 

@@ -10,10 +10,12 @@ import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
+import 'package:rateit/models/args_models/filter_args.model.dart';
 import 'package:rateit/models/args_models/order_options_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
+import 'package:rateit/models/filter.model.dart';
 import 'package:rateit/views/collection/collection_view/collection_order.dialog.dart';
 import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
 
@@ -49,6 +51,9 @@ class _CollectionViewState extends State<CollectionView> {
         child: BlocBuilder<CollectionViewCubit, CollectionViewState>(
             builder: (context, state){
               Collection? collection = state.collection;
+              List<CollectionItem>? items = (state.searchPattern != null && state.searchPattern != "")
+                  ? state.filteredItems?.where((i) => i.name!.toUpperCase().contains(state.searchPattern!.toUpperCase())).toList()
+                  : state.filteredItems;
               return Scaffold(
                   appBar: AppBar(
                       centerTitle: true,
@@ -63,11 +68,11 @@ class _CollectionViewState extends State<CollectionView> {
                             icon: Icon(Icons.filter_alt),
                             onPressed: (){
                               if(collection != null && collection.items.isNotNullOrEmpty){
-                                Navigator.pushNamed(context, collectionFiltersRoute, arguments: collection).then((value)
+                                Navigator.pushNamed(context, collectionFiltersRoute, arguments: FilterArgsModel(collection.id!, state.filterModel)).then((value)
                                 {
-                                  if(value is Collection){
-                                    context.read<CollectionViewCubit>().updateCollectionItems(value);
-                                  }else if(value is int && value == 0){
+                                  if(value is FilterModel){
+                                    context.read<CollectionViewCubit>().applyFilters(value);
+                                  }else if(value == null){
                                     context.read<CollectionViewCubit>().resetFilters();
                                   }
                                 });
@@ -133,7 +138,7 @@ class _CollectionViewState extends State<CollectionView> {
                           context.read<CollectionViewCubit>().searchByName(val);
                         },
                     ),
-                    state.filteredItems.isNotNullOrEmpty ? SingleChildScrollView(
+                    items.isNotNullOrEmpty ? SingleChildScrollView(
                         child: Container(constraints: BoxConstraints(
                           maxHeight: scrollViewHeightLg,
                         ), child:
@@ -141,9 +146,9 @@ class _CollectionViewState extends State<CollectionView> {
                             shrinkWrap: true,
                             reverse: state.orderOptions != null && state.orderOptions!.direction == "Asc",
                             //physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.filteredItems!.length,
+                            itemCount: items!.length,
                             itemBuilder: (context, position){
-                              final CollectionItem item = state.filteredItems![position];
+                              final CollectionItem item = items[position];
                               final att = item.attachments?.firstOrNull;
                               return Card(
                                 child: InkWell(

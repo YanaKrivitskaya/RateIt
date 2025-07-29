@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rateit/helpers/route_constants.dart';
+import 'package:rateit/models/args_models/filter_args.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/args_models/property_edit_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
@@ -129,10 +130,10 @@ class RouteGenerator {
         return _errorRoute();
       case collectionFiltersRoute:
         {
-          if (args is Collection) {
+          if (args is FilterArgsModel) {
             return MaterialPageRoute(
               builder: (_) => BlocProvider<CollectionFiltersCubit>(
-                create: (context) => CollectionFiltersCubit(args)..getProperties(),
+                create: (context) => CollectionFiltersCubit()..initFilters(args.collectionId, args.filterModel),
                 child: CollectionFiltersView(),
               ),
             );
