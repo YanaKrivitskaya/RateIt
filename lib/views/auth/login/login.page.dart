@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rateit/views/auth/login/cubit/login_cubit.dart';
 
-import 'login_view.dart';
+import 'login.view.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

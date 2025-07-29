@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -9,11 +10,13 @@ import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
+import 'package:rateit/models/args_models/filter_args.model.dart';
 import 'package:rateit/models/args_models/order_options_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/views/collection/collection_view/collection_order_dialog.dart';
+import 'package:rateit/models/filter.model.dart';
+import 'package:rateit/views/collection/collection_view/collection_order.dialog.dart';
 import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
 
 class CollectionView extends StatefulWidget {
@@ -48,6 +51,9 @@ class _CollectionViewState extends State<CollectionView> {
         child: BlocBuilder<CollectionViewCubit, CollectionViewState>(
             builder: (context, state){
               Collection? collection = state.collection;
+              List<CollectionItem>? items = (state.searchPattern != null && state.searchPattern != "")
+                  ? state.filteredItems?.where((i) => i.name!.toUpperCase().contains(state.searchPattern!.toUpperCase())).toList()
+                  : state.filteredItems;
               return Scaffold(
                   appBar: AppBar(
                       centerTitle: true,
@@ -58,6 +64,20 @@ class _CollectionViewState extends State<CollectionView> {
                             Navigator.pushNamedAndRemoveUntil(context, homeRoute, (route) => false);
                           }),
                       actions: [
+                        IconButton(
+                            icon: Icon(Icons.filter_alt),
+                            onPressed: (){
+                              if(collection != null && collection.items.isNotNullOrEmpty){
+                                Navigator.pushNamed(context, collectionFiltersRoute, arguments: FilterArgsModel(collection.id!, state.filterModel)).then((value)
+                                {
+                                  if(value is FilterModel){
+                                    context.read<CollectionViewCubit>().applyFilters(value);
+                                  }else if(value == null){
+                                    context.read<CollectionViewCubit>().resetFilters();
+                                  }
+                                });
+                              }
+                            }),
                         IconButton(
                             icon: Icon(Icons.sort),
                             onPressed: (){
@@ -111,7 +131,14 @@ class _CollectionViewState extends State<CollectionView> {
                   padding: EdgeInsets.only(left: viewPadding, right: viewPadding, bottom: formBottomPadding),
                   child: Column(children: [
                     Text(collection.description ?? ''),
-                    collection.items.isNotNullOrEmpty ? SingleChildScrollView(
+                    FormBuilderTextField(
+                        name: "name",
+                        decoration: const InputDecoration(labelText: 'Search by name', icon: Icon(Icons.search)),
+                        onChanged: (val){
+                          context.read<CollectionViewCubit>().searchByName(val);
+                        },
+                    ),
+                    items.isNotNullOrEmpty ? SingleChildScrollView(
                         child: Container(constraints: BoxConstraints(
                           maxHeight: scrollViewHeightLg,
                         ), child:
@@ -119,9 +146,9 @@ class _CollectionViewState extends State<CollectionView> {
                             shrinkWrap: true,
                             reverse: state.orderOptions != null && state.orderOptions!.direction == "Asc",
                             //physics: NeverScrollableScrollPhysics(),
-                            itemCount: collection.items!.length,
+                            itemCount: items!.length,
                             itemBuilder: (context, position){
-                              final CollectionItem item = collection.items![position];
+                              final CollectionItem item = items[position];
                               final att = item.attachments?.firstOrNull;
                               return Card(
                                 child: InkWell(

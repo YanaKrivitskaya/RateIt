@@ -33,6 +33,11 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
     }
   }
 
+  void updatePropertyType(String value){
+    CollectionProperty property = state.property!.copyWith(type: value);
+    emit(PropertyEditSuccess(property, property.isDropdown ?? false));
+  }
+
   void toggleDropdown(bool value){
     CollectionProperty property = state.property!.copyWith(isDropdown: value);
     emit(PropertyEditSuccess(property, property.isDropdown ?? false));

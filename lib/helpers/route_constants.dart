@@ -9,3 +9,4 @@ const String editItemRoute = '/editItem';
 const String viewItemRoute = '/viewItem';
 const String imageCropRoute = '/imageCropView';
 const String collectionSettingsRoute = '/collectionSettings';
+const String collectionFiltersRoute = '/collectionFilters';

@@ -7,7 +7,7 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/views/collection/collection_settings/collection_delete_dialog.dart';
+import 'package:rateit/views/collection/collection_settings/collection_delete.dialog.dart';
 import 'package:rateit/views/collection/collection_settings/cubit/collection_settings_cubit.dart';
 
 class CollectionSettingsView extends StatefulWidget {

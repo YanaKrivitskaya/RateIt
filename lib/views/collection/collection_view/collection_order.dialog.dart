@@ -4,7 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/models/args_models/order_options_args.model.dart';
-import 'package:rateit/models/order.models.dart';
+import 'package:rateit/models/order.model.dart';
 
 class CollectionOrderDialog extends StatelessWidget {
   String? orderField;

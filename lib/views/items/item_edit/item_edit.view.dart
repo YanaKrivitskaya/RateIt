@@ -16,12 +16,11 @@ import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
-import 'package:rateit/models/attachment.model.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/models/view_models/attachment_view.model.dart';
 import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
-import 'package:rateit/views/items/item_edit/image_crop_view.dart';
+import 'package:rateit/views/items/item_edit/image_crop.view.dart';
 
 class ItemEditView extends StatefulWidget {
   final int collectionId;
