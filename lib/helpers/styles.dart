@@ -35,6 +35,7 @@ final double sizerHeightlg = 2.h;
 //ANCHOR Padding
 final double buttonPadding = 7.w; // Button padding
 final double viewPadding = 4.w;
+final double viewPaddingL = 6.w;
 final double borderPadding = 3.w; // Border padding
 final double borderPaddingSm = 2.w;
 final double formBottomPadding = 4.h;

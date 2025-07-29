@@ -76,7 +76,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                 SizedBox(height: sizerHeightMd),
                 state is CollectionFiltersSuccess ? 
                 (state.filterModel!.properties != null) ? ListView.builder(
-                    scrollDirection: Axis.vertical,
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: state.filterModel!.properties!.length,
                     itemBuilder: (BuildContext context, int index) {

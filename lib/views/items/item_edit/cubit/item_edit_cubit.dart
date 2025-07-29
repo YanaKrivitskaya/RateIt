@@ -10,6 +10,7 @@ import 'package:rateit/database/collection_repository.dart';
 import 'package:rateit/models/collection_item.model.dart';
 import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/models/view_models/attachment_view.model.dart';
+import 'package:collection/collection.dart';
 
 part 'item_edit_state.dart';
 
@@ -45,9 +46,14 @@ class ItemEditCubit extends Cubit<ItemEditState> {
       }
       if(item.properties != null && properties.isNotNullOrEmpty){
         for(var prop in properties!){
-          var p = item.properties!.where((p) => p.id == prop.id);
-          if(p.isEmpty){
+          CollectionProperty? p = item.properties!.firstWhereOrNull((p) => p.id == prop.id);
+          if(p == null){
             item.properties!.add(prop);
+          }else{
+            if(prop.dropdownOptions != null){
+              int index = item.properties!.indexWhere((p) => p.id == prop.id);
+              item.properties![index] = p.copyWith(dropdownOptions: prop.dropdownOptions);
+            }
           }
         }
       }

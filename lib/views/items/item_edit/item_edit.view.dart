@@ -21,6 +21,7 @@ import 'package:rateit/models/collection_property.model.dart';
 import 'package:rateit/models/view_models/attachment_view.model.dart';
 import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
 import 'package:rateit/views/items/item_edit/image_crop.view.dart';
+import 'package:collection/collection.dart';
 
 class ItemEditView extends StatefulWidget {
   final int collectionId;
@@ -105,7 +106,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                 ]
             ),
           body: item != null ? Container(
-            padding: EdgeInsets.only(left: viewPadding, right: viewPadding, bottom: formBottomPadding),
+            padding: EdgeInsets.only(left: viewPaddingL, right: viewPaddingL, bottom: formBottomPadding, top: formBottomPadding),
               child: SingleChildScrollView(
                   child: FormBuilder(
                       key: _formKey,
@@ -206,7 +207,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                         FormBuilderDateTimePicker(
                           name: "date",
                           initialEntryMode: DatePickerEntryMode.calendar,
-                          initialValue: DateTime.now(),
+                          initialValue: item.date ?? DateTime.now(),
                           inputType: InputType.both,
                           format: DateFormat.yMMMd(),
                           decoration: InputDecoration(
@@ -223,7 +224,8 @@ class _ItemEditViewState extends State<ItemEditView> {
                         ),
                         SizedBox(height: sizerHeightMd),
                         (properties != null) ? ListView.builder(
-                            scrollDirection: Axis.vertical,
+                            //scrollDirection: Axis.vertical,
+                            physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: properties.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -237,7 +239,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                                       labelText: propertyName,
                                       hintText: propertyName,
                                     ),
-                                    initialValue: property.dropdownOptions!.first,
+                                    initialValue: property.value ?? property.dropdownOptions!.first,
                                     validator: property.isRequired! ? FormBuilderValidators.compose(
                                         [FormBuilderValidators.required()]) : null,
                                     items: property.dropdownOptions!
@@ -255,7 +257,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                                   FormBuilderDateTimePicker(
                                     name: propertyName,
                                     initialEntryMode: DatePickerEntryMode.calendar,
-                                    initialValue: DateTime.now(),
+                                    initialValue: property.value != null ? DateTime.parse(property.value!) : DateTime.now(),
                                     inputType: InputType.both,
                                     decoration: InputDecoration(
                                       labelText: propertyName,
