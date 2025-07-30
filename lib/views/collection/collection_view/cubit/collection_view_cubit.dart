@@ -142,21 +142,24 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
       if(item.properties.isNotNullOrEmpty){
         for(var prop in item.properties!){
           CollectionProperty filterProperty = filter.properties!.firstWhere((p) => p.id == prop.id);
-          if(filterProperty.isDropdown! && filterProperty.value != "All" && filterProperty.value != prop.value){
-            return false;
-          }
-          else if(filterProperty.type! == "Number" && (filterProperty.minValue != null || filterProperty.maxValue != null )){
-            if(prop.value == null){return false;}
-            else{
-              int? value = int.tryParse(prop.value!);
-              if(value! < filterProperty.minValue! || (filterProperty.maxValue != null && value > filterProperty.maxValue!)){
-                return false;
+          if(filterProperty.isDropdown!){
+            if(filterProperty.value != "All" && filterProperty.value != prop.value){
+              return false;
+            }
+          }else{
+            if(filterProperty.type! == "Number" && (filterProperty.minValue != null || filterProperty.maxValue != null )){
+              if(prop.value == null){return false;}
+              else{
+                double? value = double.tryParse(prop.value!);
+                if(value! < filterProperty.minValue! || (filterProperty.maxValue != null && value > filterProperty.maxValue!)){
+                  return false;
+                }
               }
             }
-          }
-          else if(filterProperty.type == "Text" && filterProperty.value != null && filterProperty.value != ""){
-            if(prop.value == null || prop.value!.toUpperCase() != filterProperty.value!.toUpperCase()){
-              return false;
+            if(filterProperty.type == "Text" && filterProperty.value != null && filterProperty.value != ""){
+              if(prop.value == null || prop.value!.toUpperCase() != filterProperty.value!.toUpperCase()){
+                return false;
+              }
             }
           }
         }
