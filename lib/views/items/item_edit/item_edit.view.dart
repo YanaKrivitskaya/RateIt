@@ -306,7 +306,7 @@ class _ItemEditViewState extends State<ItemEditView> {
 
     if(pickedFile != null){
       var fileSize = await pickedFile.length();
-      var compressPercent = 50;
+      var compressPercent = 70;
 
       var args = ImageCropArguments(compress: compressPercent, file: File(pickedFile.path));
       Navigator.pushNamed(context, imageCropRoute, arguments: args).then((imageFile) {

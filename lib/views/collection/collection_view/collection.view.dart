@@ -1,4 +1,7 @@
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -169,20 +172,16 @@ class _CollectionViewState extends State<CollectionView> {
                                       child: Row(children: [
                                         Container(
                                             width: width30,
-                                            child: att?.source != null ? Card(
+                                            child: Card(
                                               child: SizedBox(
                                                 height: width30,
                                                 child: ClipRRect(
                                                   borderRadius: BorderRadius.circular(9.0),
-                                                  child: Image.memory(att!.source!)
+                                                  child: att?.source != null
+                                                      ? Image.memory(att!.source!)
+                                                      : Image.asset('assets/loading_image.gif')
                                                 ) ,
                                               )
-                                            ) : Card(
-                                              color: ColorsPalette.blueGrey,
-                                              child: SizedBox(
-                                                height: width30,
-                                                child: Icon(Icons.image, color: Colors.white, size: iconSize),
-                                              ),
                                             )
                                         ),
                                         Expanded(child: Container(

@@ -26,6 +26,8 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
     try{
       Collection? collection = await _collectionRepository.getCollectionById(collectionId);
       if(collection != null){
+        emit(CollectionViewSuccess(collection, collection.items,
+            OrderOptionsArgs("Name", "Desc"), null, null));
         if(collection.items.isNotNullOrEmpty){
           for(var item in collection.items!){
             if(item.attachments.isNotNullOrEmpty){
