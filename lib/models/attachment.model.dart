@@ -27,7 +27,6 @@ class Attachment{
       id: map['id'],
       originalName: map['originalName'],
       path: map['path'],
-      //source: map['source'] != null ? Uint8List.fromList(map['source']['data'].cast<int>()) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
     );

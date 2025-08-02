@@ -84,6 +84,7 @@ flutter:
   assets:
     - assets/default_collection.jpg
     - assets/placeholder_image.jpg
+    - assets/loading_image.gif
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

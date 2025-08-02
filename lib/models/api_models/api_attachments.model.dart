@@ -11,7 +11,7 @@ class ApiAttachmentModel{
   Map<String, dynamic> toMap() {
     return {
       'source': source,
-      'filename': filename,
+      'filename': filename
     };
   }
   String toJson() => jsonEncode(toMap());
