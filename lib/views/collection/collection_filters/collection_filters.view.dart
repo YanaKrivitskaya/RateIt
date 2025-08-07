@@ -144,6 +144,25 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                           SizedBox(height: sizerHeightMd),
                         ],);
                       }
+                      else if (property.type == "Checkbox"){
+                        List<String> options = ['All', 'True', 'False'];
+
+                        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(label, style: appTextStyle(fontSize: accentFontSize, weight: FontWeight.bold),),
+                          FormBuilderDropdown<String>(
+                            name: propertyName,
+                            initialValue: options.first,
+                            items: options
+                                .map((value) => DropdownMenuItem(
+                              alignment: AlignmentDirectional.centerStart,
+                              value: value,
+                              child: Text(value),
+                            )).toList(),
+                            valueTransformer: (val) => val?.toString(),
+                          ),
+                          SizedBox(height: sizerHeightMd)
+                        ]);
+                      }
                       else{
                         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text(label, style: appTextStyle(fontSize: accentFontSize, weight: FontWeight.bold),),

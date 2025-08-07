@@ -35,6 +35,8 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
               Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
               att.source = imageSource;
               item.attachments![0] = att;
+              emit(CollectionViewSuccess(collection, collection.items,
+                  OrderOptionsArgs("Name", "Desc"), null, null));
             }
           }
         }
@@ -144,8 +146,9 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
       if(item.properties.isNotNullOrEmpty){
         for(var prop in item.properties!){
           CollectionProperty filterProperty = filter.properties!.firstWhere((p) => p.id == prop.id);
-          if(filterProperty.isDropdown!){
-            if(filterProperty.value != "All" && filterProperty.value != prop.value){
+          if(filterProperty.isDropdown! || filterProperty.type! == "Checkbox"){
+            String val = filterProperty.value!.toUpperCase();
+            if(val != "ALL" && val != prop.value!.toUpperCase()){
               return false;
             }
           }else{
@@ -176,6 +179,10 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
 
   void searchByName(String? nameValue){
     emit(CollectionViewSuccess(state.collection!, state.filteredItems, state.orderOptions!, state.filterModel, nameValue));
+  }
+
+  void resetSearch(){
+    emit(CollectionViewSuccess(state.collection!, state.filteredItems, state.orderOptions!, state.filterModel, ""));
   }
 
   void resetFilters(){

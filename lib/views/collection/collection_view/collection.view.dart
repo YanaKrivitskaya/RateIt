@@ -1,7 +1,3 @@
-
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -30,6 +26,8 @@ class CollectionView extends StatefulWidget {
 }
 
 class _CollectionViewState extends State<CollectionView> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<CollectionViewCubit, CollectionViewState>(
@@ -58,6 +56,7 @@ class _CollectionViewState extends State<CollectionView> {
                   ? state.filteredItems?.where((i) => i.name!.toUpperCase().contains(state.searchPattern!.toUpperCase())).toList()
                   : state.filteredItems;
               return Scaffold(
+                  resizeToAvoidBottomInset: false,
                   appBar: AppBar(
                       centerTitle: true,
                       title: Text(collection?.name ?? ''),
@@ -134,13 +133,29 @@ class _CollectionViewState extends State<CollectionView> {
                   padding: EdgeInsets.only(left: viewPadding, right: viewPadding, bottom: formBottomPadding),
                   child: Column(children: [
                     Text(collection.description ?? ''),
-                    FormBuilderTextField(
-                        name: "name",
-                        decoration: const InputDecoration(labelText: 'Search by name', icon: Icon(Icons.search)),
-                        onChanged: (val){
-                          context.read<CollectionViewCubit>().searchByName(val);
+                    Row(children: [
+                      SizedBox(
+                        width: width80,
+                        child: FormBuilder(
+                          key: _formKey,
+                          child: FormBuilderTextField(
+                            name: "name",
+                            decoration: const InputDecoration(labelText: 'Search by name', icon: Icon(Icons.search)),
+                            onChanged: (val){
+                              context.read<CollectionViewCubit>().searchByName(val);
+                            },
+                          )
+                        )
+                      ),
+                      InkWell(
+                        onTap: () {
+                          _formKey.currentState?.fields['name']?.didChange("");
+                          context.read<CollectionViewCubit>().resetSearch();
                         },
-                    ),
+                        child: Icon(Icons.close)
+                      )
+                    ],)
+                    ,
                     items.isNotNullOrEmpty ? SingleChildScrollView(
                         child: Container(constraints: BoxConstraints(
                           maxHeight: scrollViewHeightLg,
@@ -148,7 +163,6 @@ class _CollectionViewState extends State<CollectionView> {
                           ListView.builder(
                             shrinkWrap: true,
                             reverse: state.orderOptions != null && state.orderOptions!.direction == "Asc",
-                            //physics: NeverScrollableScrollPhysics(),
                             itemCount: items!.length,
                             itemBuilder: (context, position){
                               final CollectionItem item = items[position];

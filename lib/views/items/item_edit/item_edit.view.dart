@@ -111,7 +111,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                   child: FormBuilder(
                       key: _formKey,
                       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                        Text("Photos"),
+                        Text("Photos", style: TextStyle(fontSize: accentFontSize)),
                         SizedBox(
                           height: width30,
                           child: ListView(
@@ -272,6 +272,14 @@ class _ItemEditViewState extends State<ItemEditView> {
                                     // locale: const Locale.fromSubtags(languageCode: 'fr'),
                                   )
                                 ],);}
+                              else if (property.type == "Checkbox"){
+                                String label = property.comment != null ? "$propertyName, ${property.comment}" : propertyName;
+                                return FormBuilderCheckbox(
+                                  name: propertyName,
+                                  initialValue: false,
+                                  title: Text(label, style: TextStyle(fontSize: accentFontSize))
+                                );
+                              }
                               else{
                                 String label = property.comment != null ? "$propertyName, ${property.comment}" : propertyName;
                                 return Column(children: [
