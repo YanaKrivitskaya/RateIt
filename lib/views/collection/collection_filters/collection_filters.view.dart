@@ -40,7 +40,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                   leading: IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
-                        Navigator.pop(context, state.filterModel);
+                        Navigator.pop(context, -1);
                       })),
               persistentFooterButtons: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [

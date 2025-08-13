@@ -17,6 +17,7 @@ class CollectionProperty{
   final bool? isRequired;
   final int? minValue;
   final int? maxValue;
+  final int? order;
   final List<String>? dropdownOptions;
   final DateTime? createdDate;
   final DateTime? updatedDate;
@@ -33,6 +34,7 @@ class CollectionProperty{
     this.isRequired,
     this.minValue,
     this.maxValue,
+    this.order,
     this.dropdownOptions,
     this.createdDate,
     this.updatedDate,
@@ -49,6 +51,7 @@ class CollectionProperty{
       'isRequired': isRequired,
       'minValue': minValue,
       'maxValue': maxValue,
+      'order': order,
       'createdDate': createdDate?.microsecondsSinceEpoch,
       'updatedDate': updatedDate?.microsecondsSinceEpoch,
     };
@@ -67,6 +70,7 @@ class CollectionProperty{
       isRequired: map['isRequired'],
       minValue: map['minValue'],
       maxValue: map['maxValue'],
+      order: map['order'],
       dropdownOptions: map['dropdown_values'] != null ? List<String>.from(map['dropdown_values']?.map((d) => d['value'].toString())) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
@@ -89,6 +93,7 @@ class CollectionProperty{
     bool? isRequired,
     int? minValue,
     int? maxValue,
+    int? order,
     List<String>? dropdownOptions,
     DateTime? createdDate,
     DateTime? updatedDate,
@@ -105,6 +110,7 @@ class CollectionProperty{
       isRequired: isRequired ?? this.isRequired,
       minValue: minValue ?? this.minValue,
       maxValue: maxValue ?? this.maxValue,
+      order: order ?? this.order,
       dropdownOptions: dropdownOptions ?? this.dropdownOptions,
       createdDate: createdDate ?? this.createdDate,
       updatedDate: updatedDate ?? this.updatedDate,

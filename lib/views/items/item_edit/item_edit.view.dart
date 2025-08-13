@@ -276,7 +276,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                                 String label = property.comment != null ? "$propertyName, ${property.comment}" : propertyName;
                                 return FormBuilderCheckbox(
                                   name: propertyName,
-                                  initialValue: false,
+                                  initialValue: property.value != null && property.value!.toUpperCase() == "TRUE",
                                   title: Text(label, style: TextStyle(fontSize: accentFontSize))
                                 );
                               }
