@@ -50,7 +50,15 @@ class _PropertiesViewState extends State<PropertiesView> {
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context);
-                })),
+                }),
+              actions: state.hasEdits ? [
+                 IconButton(
+                    icon: Icon(Icons.save),
+                    onPressed: () {
+                      context.read<PropertiesViewCubit>().saveOrder(widget.collectionId);
+                    })] : []
+            ),
+
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: null)).then((value)
@@ -68,13 +76,17 @@ class _PropertiesViewState extends State<PropertiesView> {
             ),
             body: properties != null ? Container(
               padding: EdgeInsets.symmetric(horizontal: borderPadding),
-              child: properties.isNotEmpty ? SingleChildScrollView(child: ListView.builder(
+              child: properties.isNotEmpty ? SingleChildScrollView(child: ReorderableListView.builder(
+                onReorder: (int oldIndex, int newIndex) {
+                  context.read<PropertiesViewCubit>().editOrder(oldIndex, newIndex);
+                },
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: properties.length,
                 itemBuilder: (context, position){
                   final CollectionProperty property = properties[position];
                   return Card(
+                    key: Key('$position'),
                     child: InkWell(
                       onTap: (){
                         Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: property)).then((value)
@@ -90,23 +102,26 @@ class _PropertiesViewState extends State<PropertiesView> {
                         });
                       },
                       child: ListTile(
-                        title: Text(property.name!, style: appTextStyle(fontSize: accentFontSize)),
-                        subtitle: RichText(
-                          text: TextSpan(
-                            text: property.type,
-                            style: appTextStyle(color: ColorsPalette.black),
-                            children: <TextSpan>[
-                              property.isDropdown! ? TextSpan(text: ', dropdown') : TextSpan(),
-                              property.comment != null ? TextSpan(text: ', ${property.comment}'): TextSpan(),
-                              property.isRequired! ? TextSpan(text: ', required') : TextSpan(),
-                            ]
-                          )
-                        )
+                          title: Text(property.name!, style: appTextStyle(fontSize: accentFontSize)),
+                          subtitle: RichText(
+                              text: TextSpan(
+                                  text: property.type,
+                                  style: appTextStyle(color: ColorsPalette.black),
+                                  children: <TextSpan>[
+                                    property.isDropdown! ? TextSpan(text: ', dropdown') : TextSpan(),
+                                    property.comment != null ? TextSpan(text: ', ${property.comment}'): TextSpan(),
+                                    property.isRequired! ? TextSpan(text: ', required') : TextSpan(),
+                                  ]
+                              )
+                          ),
+                        trailing: Icon(Icons.drag_handle, color: ColorsPalette.blueGrey
+                        ),
                       ),
                     ),
                   );
                 },
-              )) : Center(child: Text('No properties')),
+              )
+            ) : Center(child: Text('No properties')),
             ) : loadingWidget(ColorsPalette.algalFuel)
           );
         }
@@ -114,3 +129,5 @@ class _PropertiesViewState extends State<PropertiesView> {
     );
   }
 }
+
+
