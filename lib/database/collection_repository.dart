@@ -152,6 +152,15 @@ class CollectionRepository {
     return itemResponse;
   }
 
+  Future<List<String>?> getPropertyValuesDistinct(int propertyId) async{
+    print("getPropertyValuesDistinct");
+
+    final response = await apiService.getSecure('${baseUrl}properties/$propertyId/values');
+
+    var valuesResponse = response['values'] != null ? List<String>.from(response['values']?.map((d) => d['value'].toString())) : null;
+    return valuesResponse;
+  }
+
   Future<CollectionItem?> createPropertyValues(int collectionId, int itemId, List<CollectionProperty> properties) async{
     print("createPropertyValues");
     ApiCreatePropertyValueModel model = ApiCreatePropertyValueModel(itemId, List.empty(growable: true));

@@ -11,6 +11,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:pinput/pinput.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
@@ -283,10 +284,38 @@ class _ItemEditViewState extends State<ItemEditView> {
                               else{
                                 String label = property.comment != null ? "$propertyName, ${property.comment}" : propertyName;
                                 return Column(children: [
-                                  FormBuilderTextField(
+                                  property.type == "Text" ?  Autocomplete<String>(
+                                    fieldViewBuilder: (
+                                        BuildContext context,
+                                        TextEditingController controller,
+                                        FocusNode focusNode,
+                                        VoidCallback onFieldSubmitted,
+                                        ) {
+                                      return FormBuilderTextField(
+                                        controller: controller..setText(property.value ?? ''),
+                                        focusNode: focusNode,
+                                        name: propertyName,
+                                        keyboardType: TextInputType.text,
+                                        decoration: InputDecoration(labelText: label),
+                                        validator: property.isRequired! ? FormBuilderValidators.compose([
+                                          FormBuilderValidators.required()
+                                        ]) : null,
+                                      );
+                                    },
+                                    optionsBuilder: (TextEditingValue textEditingValue) {
+                                      if (textEditingValue.text == '') {
+                                        return const Iterable<String>.empty();
+                                      }
+                                      return property.dropdownOptions != null ?  property.dropdownOptions!.where((String option) {
+                                        return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                                      }) : const Iterable<String>.empty();
+                                    },
+                                    onSelected: (String selection) {
+                                      debugPrint('You just selected $selection');
+                                    },
+                                  ) : FormBuilderTextField(
                                     name: propertyName,
-                                    maxLength: 50,
-                                    keyboardType: property.type == "Number" ?  TextInputType.number : TextInputType.text,
+                                    keyboardType: TextInputType.number,
                                     initialValue: property.value,
                                     decoration: InputDecoration(labelText: label),
                                     validator: property.isRequired! ? FormBuilderValidators.compose([
