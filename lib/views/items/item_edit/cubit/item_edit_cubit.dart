@@ -26,6 +26,18 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     List<AttachmentViewModel> files = List.empty(growable: true);
     List<CollectionProperty>? properties = await _collectionRepository.getCollectionProperties(collectionId);
 
+    if (properties != null){
+      for(var prop in properties){
+        if(!prop.isDropdown! && prop.type == "Text"){
+          List<String>? values = await _collectionRepository.getPropertyValuesDistinct(prop.id!);
+          if(values != null){
+            int index = properties.indexWhere((p) => p.id == prop.id);
+            properties[index] = prop.copyWith(dropdownOptions: values);
+          }
+        }
+      }
+    }
+
     if(item == null){
       CollectionItem newItem = CollectionItem(properties: properties);
       emit(ItemEditSuccess(newItem, files));

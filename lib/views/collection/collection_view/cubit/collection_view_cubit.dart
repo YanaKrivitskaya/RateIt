@@ -31,12 +31,19 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
         if(collection.items.isNotNullOrEmpty){
           for(var item in collection.items!){
             if(item.attachments.isNotNullOrEmpty){
-              var att = item.attachments!.first;
-              Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
-              att.source = imageSource;
-              item.attachments![0] = att;
-              emit(CollectionViewSuccess(collection, collection.items,
-                  OrderOptionsArgs("Name", "Desc"), null, null));
+              try{
+                var att = item.attachments!.first;
+                Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
+                att.source = imageSource;
+                item.attachments![0] = att;
+                emit(CollectionViewSuccess(collection, collection.items,
+                    OrderOptionsArgs("Name", "Desc"), null, null));
+              }
+              catch(e){
+                print(e.toString());
+                emit(CollectionViewSuccess(collection, collection.items,
+                    OrderOptionsArgs("Name", "Desc"), null, null));
+              }
             }
           }
         }
