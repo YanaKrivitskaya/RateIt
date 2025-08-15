@@ -23,7 +23,7 @@ class PropertyEditView extends StatefulWidget {
 class _PropertyEditViewState extends State<PropertyEditView> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  var typeOptions = ['Text', 'Number', 'Date', 'Checkbox'];
+  var typeOptions = ['Text', 'Number', 'Checkbox'];
 
   @override
   Widget build(BuildContext context) {
