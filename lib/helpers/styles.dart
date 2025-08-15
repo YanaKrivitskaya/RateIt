@@ -11,6 +11,7 @@ final double width10 = 10.w;
 final double width20 = 20.w;
 final double width30 = 30.w;
 final double width40 = 40.w;
+final double width45 = 45.w;
 final double width60 = 60.w;
 final double width70 = 70.w;
 final double width80 = 80.w;

@@ -253,26 +253,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                                   ),
                                   SizedBox(height: sizerHeightMd)
                                 ]);
-                              }else if(property.type == "Date"){
-                                return Column(children: [
-                                  FormBuilderDateTimePicker(
-                                    name: propertyName,
-                                    initialEntryMode: DatePickerEntryMode.calendar,
-                                    initialValue: property.value != null ? DateTime.parse(property.value!) : DateTime.now(),
-                                    inputType: InputType.both,
-                                    decoration: InputDecoration(
-                                      labelText: propertyName,
-                                      suffixIcon: IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          //_formKey.currentState!.fields['date']?.didChange(null);
-                                        },
-                                      ),
-                                    ),
-                                    initialTime: const TimeOfDay(hour: 8, minute: 0),
-                                    // locale: const Locale.fromSubtags(languageCode: 'fr'),
-                                  )
-                                ],);}
+                              }
                               else if (property.type == "Checkbox"){
                                 String label = property.comment != null ? "$propertyName, ${property.comment}" : propertyName;
                                 return FormBuilderCheckbox(

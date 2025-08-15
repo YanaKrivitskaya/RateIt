@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
+import 'package:intl/intl.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
@@ -74,6 +75,40 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                   inactiveColor: ColorsPalette.lynxWhite
                 ),
                 SizedBox(height: sizerHeightMd),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  SizedBox(width: width45, child: FormBuilderDateTimePicker(
+                    name: "dateFrom",
+                    initialEntryMode: DatePickerEntryMode.calendar,
+                    initialValue: state.filterModel?.dateFrom ?? DateTime(1995, 01, 01),
+                    inputType: InputType.both,
+                    format: DateFormat.yMMMd(),
+                    decoration: InputDecoration(
+                      labelText: "Date from",
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {},
+                      ),
+                    ),
+                    //initialTime: const TimeOfDay(hour: 8, minute: 0)
+                  )),
+                  SizedBox(width: width45, child:
+                    FormBuilderDateTimePicker(
+                      name: "dateTo",
+                      initialEntryMode: DatePickerEntryMode.calendar,
+                      initialValue: state.filterModel?.dateTo ?? DateTime.now(),
+                      inputType: InputType.both,
+                      format: DateFormat.yMMMd(),
+                      decoration: InputDecoration(
+                        labelText: "Date to",
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {},
+                        ),
+                      ),
+                      //initialTime: const TimeOfDay(hour: 8, minute: 0)
+                    ))
+                ],),
+                SizedBox(height: sizerHeightMd),
                 state is CollectionFiltersSuccess ? 
                 (state.filterModel!.properties != null) ? ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
@@ -102,26 +137,7 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
                           ),
                           SizedBox(height: sizerHeightMd)
                         ]);
-                      }else if(property.type == "Date"){
-                        return Column(children: [
-                          FormBuilderDateTimePicker(
-                            name: propertyName,
-                            initialEntryMode: DatePickerEntryMode.calendar,
-                            initialValue: DateTime.now(),
-                            inputType: InputType.both,
-                            decoration: InputDecoration(
-                              labelText: propertyName,
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.close),
-                                onPressed: () {
-                                  //_formKey.currentState!.fields['date']?.didChange(null);
-                                },
-                              ),
-                            ),
-                            initialTime: const TimeOfDay(hour: 8, minute: 0),
-                            // locale: const Locale.fromSubtags(languageCode: 'fr'),
-                          )
-                        ],);}
+                      }
                       else if(property.type == "Number"){
                         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text(label, style: appTextStyle(fontSize: accentFontSize, weight: FontWeight.bold),),
@@ -219,10 +235,11 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
 
               }
 
-              var date =  _formKey.currentState?.fields['date']?.value;
+              var dateFrom =  _formKey.currentState?.fields['dateFrom']?.value;
+              var dateTo =  _formKey.currentState?.fields['dateTo']?.value;
               var ratingRange = _formKey.currentState?.fields['rating']?.value;
 
-              Navigator.pop(context, filterModel.copyWith(rating: ratingRange, properties: properties));
+              Navigator.pop(context, filterModel.copyWith(rating: ratingRange, properties: properties, dateFrom: dateFrom, dateTo: dateTo));
             }
 
           }

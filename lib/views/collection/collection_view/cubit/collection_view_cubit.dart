@@ -149,6 +149,14 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
       }
     }
 
+    if(filter.dateFrom != null && item.date!.isBefore(filter.dateFrom!)){
+      return false;
+    }
+
+    if(filter.dateTo != null && item.date!.isAfter(filter.dateTo!)){
+      return false;
+    }
+
     if(filter.properties.isNotNullOrEmpty){
       if(item.properties.isNotNullOrEmpty){
         for(var prop in item.properties!){
