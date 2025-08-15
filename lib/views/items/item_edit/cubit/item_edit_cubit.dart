@@ -29,11 +29,18 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     if (properties != null){
       for(var prop in properties){
         if(!prop.isDropdown! && prop.type == "Text"){
-          List<String>? values = await _collectionRepository.getPropertyValuesDistinct(prop.id!);
-          if(values != null){
-            int index = properties.indexWhere((p) => p.id == prop.id);
-            properties[index] = prop.copyWith(dropdownOptions: values);
+          try{
+            List<String>? values = await _collectionRepository.getPropertyValuesDistinct(prop.id!);
+            if(values != null){
+              int index = properties.indexWhere((p) => p.id == prop.id);
+              properties[index] = prop.copyWith(dropdownOptions: values);
+            }
+          }catch(e){
+            continue;
           }
+        }
+        if(prop.isDropdown! && prop.dropdownOptions != null){
+          prop.dropdownOptions!.insert(0, "N/A");
         }
       }
     }
