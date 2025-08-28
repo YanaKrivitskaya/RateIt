@@ -1,8 +1,8 @@
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/property.model.dart';
 
 class PropertyEditArgs {
   final int collectionId;
-  final CollectionProperty? property;
+  final Property? property;
 
   PropertyEditArgs({required this.collectionId, this.property});
 }

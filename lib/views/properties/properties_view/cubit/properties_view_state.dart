@@ -2,12 +2,11 @@ part of 'properties_view_cubit.dart';
 
 @immutable
 sealed class PropertiesViewState {
-  final List<CollectionProperty>? properties;
+  final List<Property>? properties;
   final bool hasEdits;
 
   const PropertiesViewState(this.properties, this.hasEdits);
 
-  @override
   List<Object?> get props => [properties, hasEdits];
 }
 
@@ -20,7 +19,7 @@ class PropertiesViewLoading extends PropertiesViewState{
 }
 
 class PropertiesViewSuccess extends PropertiesViewState{
-  final List<CollectionProperty> properties;
+  final List<Property> properties;
   final bool hasEdits;
 
   const PropertiesViewSuccess(this.properties, this.hasEdits)

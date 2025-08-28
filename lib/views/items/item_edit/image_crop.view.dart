@@ -18,7 +18,7 @@ class ImageCropView extends StatefulWidget {
   final int compress;
 
   const
-  ImageCropView(this.image, this.compress);
+  ImageCropView(this.image, this.compress, {super.key});
 
   @override
   _ImageCropViewState createState() => _ImageCropViewState();

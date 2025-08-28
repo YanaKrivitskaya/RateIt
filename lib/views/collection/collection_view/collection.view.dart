@@ -13,7 +13,7 @@ import 'package:rateit/models/args_models/filter_args.model.dart';
 import 'package:rateit/models/args_models/order_options_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
-import 'package:rateit/models/collection_item.model.dart';
+import 'package:rateit/models/item.model.dart';
 import 'package:rateit/models/filter.model.dart';
 import 'package:rateit/views/collection/collection_view/collection_order.dialog.dart';
 import 'package:rateit/views/collection/collection_view/cubit/collection_view_cubit.dart';
@@ -52,7 +52,7 @@ class _CollectionViewState extends State<CollectionView> {
         child: BlocBuilder<CollectionViewCubit, CollectionViewState>(
             builder: (context, state){
               Collection? collection = state.collection;
-              List<CollectionItem>? items = (state.searchPattern != null && state.searchPattern != "")
+              List<Item>? items = (state.searchPattern != null && state.searchPattern != "")
                   ? state.filteredItems?.where((i) => i.name!.toUpperCase().contains(state.searchPattern!.toUpperCase())).toList()
                   : state.filteredItems;
               return Scaffold(
@@ -119,7 +119,7 @@ class _CollectionViewState extends State<CollectionView> {
                       if(collection != null){
                         Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: collection.id!, item: null)).then((value)
                         {
-                          if(value != null && value is CollectionItem){
+                          if(value != null && value is Item){
                             context.read<CollectionViewCubit>().addNewItem(state.collection!.id!, value);
                           }
                         });
@@ -154,8 +154,8 @@ class _CollectionViewState extends State<CollectionView> {
                         },
                         child: Icon(Icons.close)
                       )
-                    ],)
-                    ,
+                    ],),
+                    SizedBox(height: sizerHeightsm,),
                     items.isNotNullOrEmpty ? SingleChildScrollView(
                         child: Container(constraints: BoxConstraints(
                           maxHeight: scrollViewHeightLg,
@@ -165,7 +165,7 @@ class _CollectionViewState extends State<CollectionView> {
                             reverse: state.orderOptions != null && state.orderOptions!.direction == "Asc",
                             itemCount: items!.length,
                             itemBuilder: (context, position){
-                              final CollectionItem item = items[position];
+                              final Item item = items[position];
                               final att = item.attachments?.firstOrNull;
                               return Card(
                                 child: InkWell(
@@ -173,7 +173,7 @@ class _CollectionViewState extends State<CollectionView> {
                                       Navigator.pushNamed(context, viewItemRoute, arguments: ItemViewArgs(collectionId: collection.id!, itemId: item.id!)).then((value)
                                       {
                                         if(value != null){
-                                          if(value is CollectionItem){
+                                          if(value is Item){
                                             context.read<CollectionViewCubit>().updateItem(value, position);
                                           }else if(value is int){
                                             context.read<CollectionViewCubit>().removeItem(value);
@@ -193,7 +193,8 @@ class _CollectionViewState extends State<CollectionView> {
                                                   borderRadius: BorderRadius.circular(9.0),
                                                   child: att?.source != null
                                                       ? Image.memory(att!.source!)
-                                                      : Image.asset('assets/loading_image.gif')
+                                                      : att?.id != null ? Image.asset('assets/loading_image.gif')
+                                                      : Image.asset('assets/placeholder_image.jpg')
                                                 ) ,
                                               )
                                             )
@@ -212,7 +213,7 @@ class _CollectionViewState extends State<CollectionView> {
                                               itemSize: starSize,
                                               direction: Axis.horizontal,
                                             )]),
-                                            Text('${DateFormat.yMMMd().format(item.date!)}')
+                                            Text(DateFormat.yMMMd().format(item.date!))
                                           ],),
                                         )),
                                       ]),

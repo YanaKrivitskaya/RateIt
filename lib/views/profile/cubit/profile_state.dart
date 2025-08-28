@@ -12,12 +12,14 @@ class ProfileInitial extends ProfileState {
 }
 
 class ProfileStateLoading extends ProfileState {
+  @override
   final User? user;
 
   const ProfileStateLoading(this.user) :super(user);
 }
 
 class ProfileStateSuccess extends ProfileState {
+  @override
   final User user;
 
   const ProfileStateSuccess(this.user) :super(user);
@@ -26,6 +28,7 @@ class ProfileStateSuccess extends ProfileState {
 }
 
 class ProfileStateError extends ProfileState {
+  @override
   final User? user;
   final String error;
 

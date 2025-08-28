@@ -7,7 +7,6 @@ sealed class CollectionFiltersState {
 
   const CollectionFiltersState(this.collectionId, this.filterModel);
 
-  @override
   List<Object?> get props => [collectionId, filterModel];
 }
 

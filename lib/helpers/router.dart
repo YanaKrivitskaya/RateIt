@@ -1,8 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/models/args_models/filter_args.model.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
@@ -103,7 +100,7 @@ class RouteGenerator {
         if (args is ItemViewArgs) {
           return MaterialPageRoute(
             builder: (_) => BlocProvider<ItemViewCubit>(
-              create: (context) => ItemViewCubit()..getItem(args.collectionId, args.itemId),
+              create: (context) => ItemViewCubit()..getItem(args.itemId),
               child: ItemView(collectionId: args.collectionId, itemId: args.itemId),
             ),
           );}

@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-
-import 'attachment.model.dart';
-import 'collection_item.model.dart';
-import 'collection_property.model.dart';
+import 'item.model.dart';
+import 'property.model.dart';
 
 @immutable
 class Collection{
@@ -16,8 +14,8 @@ class Collection{
   final Color? colorPrimary;
   final Color? colorAccent;
   final Uint8List? imageSrc;
-  final List<CollectionProperty>? properties;
-  final List<CollectionItem>? items;
+  final List<Property>? properties;
+  final List<Item>? items;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
@@ -57,8 +55,8 @@ class Collection{
       colorPrimary: map['colorPrimary'] != null ? Color(map['colorPrimary']) : null,
       colorAccent: map['colorAccent'] != null ? Color(map['colorAccent']) : null,
       imageSrc: map['imageSrc'] != null ? Uint8List.fromList(map['imageSrc']['data'].cast<int>()) : null,
-      properties: map['properties'] != null ? List<CollectionProperty>.from(map['properties']?.map((x) => CollectionProperty.fromMap(x))) : null,
-      items: map['items'] != null ? List<CollectionItem>.from(map['items']?.map((x) => CollectionItem.fromMap(x))) : null,
+      properties: map['properties'] != null ? List<Property>.from(map['properties']?.map((x) => Property.fromMap(x))) : null,
+      items: map['items'] != null ? List<Item>.from(map['items']?.map((x) => Item.fromMap(x))) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
     );
@@ -76,8 +74,8 @@ class Collection{
     Color? colorPrimary,
     Color? colorAccent,
     Uint8List? imageSrc,
-    List<CollectionProperty>? properties,
-    List<CollectionItem>? items,
+    List<Property>? properties,
+    List<Item>? items,
     DateTime? createdDate,
     DateTime? updatedDate,
   }) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logging/logging.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/services/api.service.dart';
@@ -16,6 +17,11 @@ import 'helpers/router.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //is required in Flutter v1.9.4+ before using any plugins if the code is executed before runApp.
   await ApiService.init();
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    // ignore: avoid_print
+    print('${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
+  });
   runApp(
       BlocProvider(
         create: (context) => AuthCubit()..checkAuthentication(),
@@ -46,10 +52,7 @@ class RateItApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: ColorsPalette.flirtatious,
           scaffoldBackgroundColor: ColorsPalette.white,
-          textTheme: GoogleFonts.playpenSansTextTheme(Theme.of(context).textTheme).apply(
-            fontSizeFactor: 1.1,
-            fontSizeDelta: 2.0
-          ),
+          textTheme: GoogleFonts.playpenSansTextTheme(Theme.of(context).textTheme).apply(),
           colorScheme: ColorScheme.fromSwatch().copyWith(
               secondary: ColorsPalette.turquoiseTopaz,
               outline: ColorsPalette.boyzone

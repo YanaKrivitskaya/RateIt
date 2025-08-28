@@ -1,11 +1,9 @@
 
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 @immutable
-class CollectionProperty{
+class Property{
   final int? id;
   final String? name;
   final String? type;
@@ -22,7 +20,7 @@ class CollectionProperty{
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
-  const CollectionProperty({
+  const Property({
     this.id,
     this.name,
     this.type,
@@ -57,14 +55,14 @@ class CollectionProperty{
     };
   }
 
-  factory CollectionProperty.fromMap(Map<String, dynamic> map) {
-    return CollectionProperty(
+  factory Property.fromMap(Map<String, dynamic> map) {
+    return Property(
       id: map['id'],
       name: map['name'],
       type: map['type'],
       comment: map['comment'],
-      valueId: map['collection_item_value'] != null ? map['collection_item_value']['id'] : null,
-      value: map['collection_item_value'] != null ? map['collection_item_value']['value'].toString() : null,
+      valueId: map['property_value'] != null ? map['property_value']['id'] : null,
+      value: map['property_value'] != null ? map['property_value']['value'].toString() : null,
       isFilter: map['isFilter'],
       isDropdown: map['isDropdown'],
       isRequired: map['isRequired'],
@@ -79,9 +77,9 @@ class CollectionProperty{
 
   String toJson() => jsonEncode(toMap());
 
-  factory CollectionProperty.fromJson(String source) => CollectionProperty.fromMap(jsonDecode(source));
+  factory Property.fromJson(String source) => Property.fromMap(jsonDecode(source));
 
-  CollectionProperty copyWith({
+  Property copyWith({
     int? id,
     String? name,
     String? type,
@@ -98,7 +96,7 @@ class CollectionProperty{
     DateTime? createdDate,
     DateTime? updatedDate,
   }) {
-    return CollectionProperty(
+    return Property(
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,

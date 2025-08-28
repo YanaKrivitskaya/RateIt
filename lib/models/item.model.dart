@@ -2,21 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:rateit/models/attachment.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/property.model.dart';
 
 @immutable
-class CollectionItem{
+class Item{
   final int? id;
   final String? name;
   final String? description;
   final double? rating;
   final DateTime? date;
   final List<Attachment>? attachments;
-  final List<CollectionProperty>? properties;
+  final List<Property>? properties;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
-  const CollectionItem({
+  const Item({
     this.id,
     this.name,
     this.description,
@@ -40,16 +40,16 @@ class CollectionItem{
     };
   }
 
-  factory CollectionItem.fromMap(Map<String, dynamic> map) {
+  factory Item.fromMap(Map<String, dynamic> map) {
 
-    return CollectionItem(
+    return Item(
       id: map['id'],
       name: map['name'],
       description: map['description'],
       rating: map['rating'] != null ? (map['rating']).toDouble() : null,
       date: DateTime.parse(map['date']),
       attachments: map['attachments'] != null ? List<Attachment>.from(map['attachments']?.map((x) => Attachment.fromMap(x))) : null,
-      properties: map['properties'] != null ? List<CollectionProperty>.from(map['properties']?.map((x) => CollectionProperty.fromMap(x))) : null,
+      properties: map['properties'] != null ? List<Property>.from(map['properties']?.map((x) => Property.fromMap(x))) : null,
       createdDate: DateTime.parse(map['createdDate']),
       updatedDate: DateTime.parse(map['updatedDate']),
     );
@@ -57,20 +57,20 @@ class CollectionItem{
 
   String toJson() => jsonEncode(toMap());
 
-  factory CollectionItem.fromJson(String source) => CollectionItem.fromMap(jsonDecode(source));
+  factory Item.fromJson(String source) => Item.fromMap(jsonDecode(source));
 
-  CollectionItem copyWith({
+  Item copyWith({
     int? id,
     String? name,
     String? description,
     double? rating,
     DateTime? date,
     List<Attachment>? attachments,
-    List<CollectionProperty>? properties,
+    List<Property>? properties,
     DateTime? createdDate,
     DateTime? updatedDate,
   }) {
-    return CollectionItem(
+    return Item(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,

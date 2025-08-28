@@ -12,7 +12,7 @@ import 'cubit/otp_cubit.dart';
 
 class OtpVerificationView extends StatefulWidget {
   final String email;
-  OtpVerificationView(this.email);
+  const OtpVerificationView(this.email, {super.key});
 
   @override
   _OtpVerificationViewState createState() => _OtpVerificationViewState();
@@ -118,72 +118,70 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   }
 
   Widget _pinForm(TextEditingController pinController, PinTheme defaultTheme,
-      Widget cursor, String email, OtpTimerButtonController otpController) => Container(
-    child: Column(children: [
-      Column(mainAxisSize: MainAxisSize.min, children: [
-        Text("Verification",
-            style: appTextStyle(fontSize: headerFontSize, weight: FontWeight.w700, color: ColorsPalette.boyzone)),
-        SizedBox(height: sizerHeightlg),
-        Text(
-          'Enter the code sent to the email',
-          style: appTextStyle(color: ColorsPalette.black),
-        ),
-        Text(
-          email,
-          style: appTextStyle(color: ColorsPalette.boyzone),
-        ),
-        SizedBox(height: sizerHeightlg),
-        InkWell(
-          child: Text("Wrong email?", style: appTextStyle(
-              fontSize: fontSize,
-              color: ColorsPalette.black,
-              decoration: TextDecoration.underline
-          )),
-          onTap: () => Navigator.pop(context),
-        ),
-        SizedBox(height: formBottomPadding)
-      ]),
-      SizedBox(height: sizerHeightsm),
-      Pinput(
-        length: 4,
-        controller: pinController,
-        focusNode: focusNode,
-        defaultPinTheme: defaultTheme,
-        focusedPinTheme: defaultTheme.copyWith(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.05999999865889549),
-                offset: Offset(0, 3),
-                blurRadius: 16,
-              )
-            ],
+      Widget cursor, String email, OtpTimerButtonController otpController) => Column(children: [
+        Column(mainAxisSize: MainAxisSize.min, children: [
+          Text("Verification",
+              style: appTextStyle(fontSize: headerFontSize, weight: FontWeight.w700, color: ColorsPalette.boyzone)),
+          SizedBox(height: sizerHeightlg),
+          Text(
+            'Enter the code sent to the email',
+            style: appTextStyle(color: ColorsPalette.black),
           ),
+          Text(
+            email,
+            style: appTextStyle(color: ColorsPalette.boyzone),
+          ),
+          SizedBox(height: sizerHeightlg),
+          InkWell(
+            child: Text("Wrong email?", style: appTextStyle(
+                fontSize: fontSize,
+                color: ColorsPalette.black,
+                decoration: TextDecoration.underline
+            )),
+            onTap: () => Navigator.pop(context),
+          ),
+          SizedBox(height: formBottomPadding)
+        ]),
+        SizedBox(height: sizerHeightsm),
+        Pinput(
+          length: 4,
+          controller: pinController,
+          focusNode: focusNode,
+          defaultPinTheme: defaultTheme,
+          focusedPinTheme: defaultTheme.copyWith(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.05999999865889549),
+                  offset: Offset(0, 3),
+                  blurRadius: 16,
+                )
+              ],
+            ),
+          ),
+          showCursor: true,
+          cursor: cursor,
         ),
-        showCursor: true,
-        cursor: cursor,
-      ),
-      SizedBox(height: formBottomPadding),
-      Text(
-        'Didn’t receive a code?',
-        style: appTextStyle(
-          fontSize: fontSize,
-          color: ColorsPalette.boyzone,
-      )),
-      OtpTimerButton(
-        controller: otpController,
-        onPressed: () {
-          otpController.startTimer();
-          context.read<OtpCubit>().resendOtp(widget.email);
-        },
-        text: Text('Resend', style: appTextStyle(color: ColorsPalette.lynxWhite)),
-        duration: 60,
-        backgroundColor: ColorsPalette.boyzone,
-      ),
-    ],)
-  );
+        SizedBox(height: formBottomPadding),
+        Text(
+          'Didn’t receive a code?',
+          style: appTextStyle(
+            fontSize: fontSize,
+            color: ColorsPalette.boyzone,
+        )),
+        OtpTimerButton(
+          controller: otpController,
+          onPressed: () {
+            otpController.startTimer();
+            context.read<OtpCubit>().resendOtp(widget.email);
+          },
+          text: Text('Resend', style: appTextStyle(color: ColorsPalette.lynxWhite)),
+          duration: 60,
+          backgroundColor: ColorsPalette.boyzone,
+        ),
+      ],);
 
   void _onPinChanged() {
     var pin = pinController.text;

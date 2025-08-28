@@ -12,8 +12,8 @@ import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/args_models/item_args.model.dart';
 import 'package:rateit/models/attachment.model.dart';
-import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/item.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/views/items/item_view/cubit/item_view_cubit.dart';
 import 'package:rateit/views/items/item_view/item_delete.dialog.dart';
 import 'package:rateit/views/items/item_view/items_image_provider.dart';
@@ -62,8 +62,8 @@ class _ItemViewState extends State<ItemView> {
       },
         child: BlocBuilder<ItemViewCubit, ItemViewState>(
         builder: (context, state){
-          CollectionItem? item = state.item;
-          List<CollectionProperty>? properties = item?.properties;
+          Item? item = state.item;
+          List<Property>? properties = item?.properties;
           return Scaffold(
             appBar: AppBar(
                 leading: IconButton(
@@ -79,8 +79,8 @@ class _ItemViewState extends State<ItemView> {
                           context.read<ItemViewCubit>().setEditState();
                           Navigator.pushNamed(context, editItemRoute, arguments: ItemEditArgs(collectionId: widget.collectionId, item: item)).then((value)
                           {
-                            if(value != null && value is CollectionItem){
-                              context.read<ItemViewCubit>().getItem(widget.collectionId, value.id!);
+                            if(value != null && value is Item){
+                              context.read<ItemViewCubit>().getItem(value.id!);
                             }
                           });
                         }
@@ -109,6 +109,7 @@ class _ItemViewState extends State<ItemView> {
                 child: Column(children: [
                   Text(item.name!, style: appTextStyle(fontSize: accentFontSize),),
                   Text(item.description ?? ''),
+                  SizedBox(height: sizerHeightsm,),
                   (item.attachments.isNotNullOrEmpty) ? SizedBox(
                     height: width30,
                       child: ListView(
@@ -125,7 +126,6 @@ class _ItemViewState extends State<ItemView> {
                                 }
                                 ),
                                 SizedBox(width: sizerWidthsm),
-
                               ],);
                             })
                           ]

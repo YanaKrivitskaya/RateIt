@@ -6,7 +6,6 @@ sealed class CollectionEditState {
 
   const CollectionEditState(this.collection);
 
-  @override
   List<Object?> get props => [collection];
 }
 

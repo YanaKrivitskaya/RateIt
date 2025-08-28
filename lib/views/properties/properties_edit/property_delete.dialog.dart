@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 
 class PropertyDeleteDialog extends StatefulWidget {
   final String propertyName;
-  const PropertyDeleteDialog({required this.propertyName});
+  const PropertyDeleteDialog({super.key, required this.propertyName});
 
   @override
   _PropertyDeleteDialogState createState() => _PropertyDeleteDialogState();

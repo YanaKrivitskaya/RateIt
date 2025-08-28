@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 
 class CollectionDeleteDialog extends StatelessWidget {
   final String collectionName;
-  const CollectionDeleteDialog({required this.collectionName});
+  const CollectionDeleteDialog({super.key, required this.collectionName});
 
   @override
   Widget build(BuildContext context) {

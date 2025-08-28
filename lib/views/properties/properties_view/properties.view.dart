@@ -6,7 +6,7 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/args_models/property_edit_args.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/views/properties/properties_view/cubit/properties_view_cubit.dart';
 
 class PropertiesView extends StatefulWidget {
@@ -41,7 +41,7 @@ class _PropertiesViewState extends State<PropertiesView> {
       },
       child: BlocBuilder<PropertiesViewCubit, PropertiesViewState>(
         builder: (context, state){
-          List<CollectionProperty>? properties = state.properties;
+          List<Property>? properties = state.properties;
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -55,7 +55,7 @@ class _PropertiesViewState extends State<PropertiesView> {
                  IconButton(
                     icon: Icon(Icons.save),
                     onPressed: () {
-                      context.read<PropertiesViewCubit>().saveOrder(widget.collectionId);
+                      context.read<PropertiesViewCubit>().saveOrder();
                     })] : []
             ),
 
@@ -64,7 +64,7 @@ class _PropertiesViewState extends State<PropertiesView> {
                 Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: null)).then((value)
                 {
                   if(value != null){
-                    if(value is CollectionProperty){
+                    if(value is Property){
                       context.read<PropertiesViewCubit>().updatePropertyList(value);
                     }
                   }
@@ -84,7 +84,7 @@ class _PropertiesViewState extends State<PropertiesView> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: properties.length,
                 itemBuilder: (context, position){
-                  final CollectionProperty property = properties[position];
+                  final Property property = properties[position];
                   return Card(
                     key: Key('$position'),
                     child: InkWell(
@@ -92,7 +92,7 @@ class _PropertiesViewState extends State<PropertiesView> {
                         Navigator.pushNamed(context, editPropertiesRoute, arguments: PropertyEditArgs(collectionId: widget.collectionId, property: property)).then((value)
                         {
                           if(value != null){
-                            if(value is CollectionProperty){
+                            if(value is Property){
                               context.read<PropertiesViewCubit>().updatePropertyList(value);
                             }
                             else if(value is int){

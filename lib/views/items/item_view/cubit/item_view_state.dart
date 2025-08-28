@@ -2,12 +2,11 @@ part of 'item_view_cubit.dart';
 
 @immutable
 sealed class ItemViewState {
-  final CollectionItem? item;
+  final Item? item;
   final bool hasEdit;
 
   const ItemViewState(this.item, this.hasEdit);
 
-  @override
   List<Object?> get props => [item, hasEdit];
 }
 
@@ -20,7 +19,7 @@ class ItemViewLoading extends ItemViewState{
 }
 
 class ItemViewSuccess extends ItemViewState{
-  final CollectionItem item;
+  final Item item;
   final bool hasEdit;
 
   const ItemViewSuccess(this.item, this.hasEdit): super(item, hasEdit);

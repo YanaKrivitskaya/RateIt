@@ -6,7 +6,6 @@ abstract class OtpState {
 
   const OtpState(this.otp);
 
-  @override
   List<Object?> get props => [otp];
 }
 

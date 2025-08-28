@@ -2,11 +2,10 @@ part of 'property_edit_cubit.dart';
 
 @immutable
 sealed class PropertyEditState {
-  final CollectionProperty? property;
+  final Property? property;
 
   const PropertyEditState(this.property);
 
-  @override
   List<Object?> get props => [property];
 }
 
@@ -19,14 +18,14 @@ class PropertyEditLoading extends PropertyEditState{
 }
 
 class PropertyEditSuccess extends PropertyEditState{
-  final CollectionProperty property;
+  final Property property;
   final bool isDropdown;
 
   const PropertyEditSuccess(this.property, this.isDropdown): super(property);
 }
 
 class PropertyEditCreated extends PropertyEditState{
-  final CollectionProperty? property;
+  final Property? property;
 
   const PropertyEditCreated(this.property): super(property);
 }

@@ -32,7 +32,6 @@ class HomeCubit extends Cubit<HomeState> {
         emit(HomeStateSuccess(state.collections!));
       }
     }catch(e){
-      print(e.toString());
       return emit(HomeStateError(state.collections, e.toString()));
     }
   }

@@ -6,7 +6,7 @@ import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/views/properties/properties_edit/property_delete.dialog.dart';
 import 'package:rateit/views/properties/properties_edit/property_dropdown.dialog.dart';
 
@@ -64,7 +64,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
         },
         child: BlocBuilder<PropertyEditCubit, PropertyEditState>(
         builder: (context, state){
-          CollectionProperty? property = state.property;
+          Property? property = state.property;
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -85,7 +85,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                             String? minValue = _formKey.currentState?.fields['minValue']?.value;
                             String? maxValue = _formKey.currentState?.fields['maxValue']?.value;
 
-                            CollectionProperty newProperty = property.copyWith(
+                            Property newProperty = property.copyWith(
                               name: _formKey.currentState?.fields['name']?.value,
                               type: _formKey.currentState?.fields['type']?.value,
                               comment: _formKey.currentState?.fields['comment']?.value,
@@ -183,7 +183,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                         title: Text("Property is a dropdown", style: appTextStyle(fontSize: fontSize16),)
                     ),
                     Visibility(
-                      visible: property?.isDropdown ?? false,
+                      visible: property.isDropdown ?? false,
                       // Can use to recreate completely the field
                       // maintainState: false,
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
@@ -196,7 +196,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                                 foregroundColor: WidgetStateProperty.all<Color>(ColorsPalette.white)
                             ),
                             onPressed: () {
-                              String propertyName = property!.name ?? _formKey.currentState?.fields['name']?.value;
+                              String propertyName = property.name ?? _formKey.currentState?.fields['name']?.value;
                               showDialog(
                                   barrierDismissible: false, context: context, builder: (_) =>
                                   PropertyDropdownDialog(propertyName: propertyName, value: '')
@@ -207,7 +207,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
                               });
                             },
                             child: Text('Add value')),
-                        (property?.dropdownOptions != null && property!.dropdownOptions!.isNotEmpty )?
+                        (property.dropdownOptions != null && property.dropdownOptions!.isNotEmpty )?
                         Column(children: [
                           ListView.builder(
                             shrinkWrap: true,
@@ -250,7 +250,7 @@ class _PropertyEditViewState extends State<PropertyEditView> {
     );
   }
 
-  Widget deleteButton(BuildContext context, CollectionProperty? property) => OutlinedButton(
+  Widget deleteButton(BuildContext context, Property? property) => OutlinedButton(
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(9.0),

@@ -6,7 +6,6 @@ abstract class LoginState {
 
   const LoginState(this.email);
 
-  @override
   List<Object?> get props => [email];
 }
 
