@@ -1,5 +1,4 @@
 
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:easy_image_viewer/easy_image_viewer.dart';

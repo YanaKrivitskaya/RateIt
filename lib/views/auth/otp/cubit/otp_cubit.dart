@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import 'package:rateit/database/api_user_repository.dart';
-import 'package:rateit/models/custom_exception.dart';
 import 'package:rateit/models/user.model.dart';
 
 part 'otp_state.dart';

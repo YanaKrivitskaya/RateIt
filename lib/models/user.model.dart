@@ -11,7 +11,7 @@ class User{
   final bool? disabled;
   final DateTime? disabledDate;
 
-  User({
+  const User({
     this.id,
     this.name,
     this.email,

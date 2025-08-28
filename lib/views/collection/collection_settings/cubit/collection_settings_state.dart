@@ -6,7 +6,6 @@ sealed class CollectionSettingsState {
 
   const CollectionSettingsState(this.collection);
 
-  @override
   List<Object?> get props => [collection];
 }
 

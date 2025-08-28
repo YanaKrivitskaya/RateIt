@@ -2,14 +2,12 @@
 import 'dart:convert';
 
 class ApiCreatePropertyValueModel{
-  int itemId;
   List<ApiPropertyValue> data;
 
-  ApiCreatePropertyValueModel(this.itemId, this.data);
+  ApiCreatePropertyValueModel(this.data);
 
   Map<String, dynamic> toMap() {
     return {
-      'itemId': itemId,
       'data': data.map((d) => d.toMap()).toList(),
     };
   }

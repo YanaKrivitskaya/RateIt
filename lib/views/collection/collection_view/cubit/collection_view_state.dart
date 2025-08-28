@@ -3,14 +3,13 @@ part of 'collection_view_cubit.dart';
 @immutable
 sealed class CollectionViewState {
   final Collection? collection;
-  final List<CollectionItem>? filteredItems;
+  final List<Item>? filteredItems;
   final OrderOptionsArgs? orderOptions;
   final FilterModel? filterModel;
   final String? searchPattern;
 
   const CollectionViewState(this.collection, this.filteredItems, this.orderOptions, this.filterModel, this.searchPattern);
 
-  @override
   List<Object?> get props => [collection, filteredItems, orderOptions, filterModel, searchPattern];
 }
 
@@ -24,7 +23,7 @@ class CollectionViewLoading extends CollectionViewState{
 
 class CollectionViewSuccess extends CollectionViewState{
   final Collection collection;
-  final List<CollectionItem>? filteredItems;
+  final List<Item>? filteredItems;
   final OrderOptionsArgs orderOptions;
   final FilterModel? filterModel;
   final String? searchPattern;

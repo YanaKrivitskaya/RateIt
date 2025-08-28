@@ -2,22 +2,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:rateit/helpers/colors.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
-import 'package:rateit/main.dart';
-import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/models/filter.model.dart';
 import 'package:rateit/views/collection/collection_filters/cubit/collection_filters_cubit.dart';
 
 class CollectionFiltersView extends StatefulWidget {
 
-  const CollectionFiltersView();
+  const CollectionFiltersView({super.key});
 
   @override
   _CollectionFiltersViewState createState() => _CollectionFiltersViewState();
@@ -213,9 +209,9 @@ class _CollectionFiltersViewState extends State<CollectionFiltersView> {
         if(filterModel != null){
           var isFormValid = _formKey.currentState!.validate();
           if(isFormValid){
-            List<CollectionProperty>? props = filterModel.properties;
+            List<Property>? props = filterModel.properties;
             if(props != null && props.isNotEmpty){
-              List<CollectionProperty> properties = List.empty(growable: true);
+              List<Property> properties = List.empty(growable: true);
 
               for (var prop in props) {
                 if(prop.type == "Number"){

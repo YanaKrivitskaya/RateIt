@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/property.model.dart';
 
 class FilterModel{
   final RangeValues? rating;
   final DateTime? dateFrom;
   final DateTime? dateTo;
-  final List<CollectionProperty>? properties;
+  final List<Property>? properties;
 
   const FilterModel({
     this.rating,
@@ -19,7 +19,7 @@ class FilterModel{
     RangeValues? rating,
     DateTime? dateFrom,
     DateTime? dateTo,
-    List<CollectionProperty>? properties,
+    List<Property>? properties,
   }) {
     return FilterModel(
       rating: rating ?? this.rating,

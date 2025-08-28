@@ -2,22 +2,26 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:rateit/database/attachments_repository.dart';
 import 'package:rateit/database/collection_repository.dart';
 import 'package:rateit/models/args_models/order_options_args.model.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/models/collection_item.model.dart';
-import 'package:collection/collection.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/item.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/models/filter.model.dart';
 
 part 'collection_view_state.dart';
 
 class CollectionViewCubit extends Cubit<CollectionViewState> {
   final CollectionRepository _collectionRepository;
+  final AttachmentsRepository _attachmentsRepository;
+  final log = Logger('CollectionViewCubit');
 
   CollectionViewCubit() :
       _collectionRepository = CollectionRepository(),
+      _attachmentsRepository = AttachmentsRepository(),
       super(CollectionViewInitial());
 
   void getCollection(int collectionId) async{
@@ -33,14 +37,14 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
             if(item.attachments.isNotNullOrEmpty){
               try{
                 var att = item.attachments!.first;
-                Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
+                Uint8List? imageSource = await _attachmentsRepository.getAttachmentById(att.id);
                 att.source = imageSource;
                 item.attachments![0] = att;
                 emit(CollectionViewSuccess(collection, collection.items,
                     OrderOptionsArgs("Name", "Desc"), null, null));
               }
               catch(e){
-                print(e.toString());
+                log.shout(e.toString());
                 emit(CollectionViewSuccess(collection, collection.items,
                     OrderOptionsArgs("Name", "Desc"), null, null));
               }
@@ -51,7 +55,7 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
             OrderOptionsArgs("Name", "Desc"), null, null));
       }
     }catch(e){
-      print(e.toString());
+      log.shout(e.toString());
       return emit(CollectionViewError(e.toString(), null, null, null, null, state.searchPattern));
     }
   }
@@ -63,20 +67,20 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
       Collection updCollection = state.collection!.copyWith(name: collection.name, description: collection.description, icon: collection.icon);
       emit(CollectionViewSuccess(updCollection, state.filteredItems, state.orderOptions!, state.filterModel, state.searchPattern));
     }catch(e){
-      print(e.toString());
+      log.shout(e.toString());
       return emit(CollectionViewError(e.toString(), state.collection, state.filteredItems, state.orderOptions, state.filterModel, state.searchPattern));
     }
   }
 
-  void addNewItem(int collectionId, CollectionItem? item) async{
+  void addNewItem(int collectionId, Item? item) async{
     emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions, state.filterModel, state.searchPattern));
 
     try{
       if(item != null) {
-        CollectionItem newItem = item.copyWith(attachments: List.empty(growable: true));
-        var att = await _collectionRepository.getCoverAttachment(item.id!);
+        Item newItem = item.copyWith(attachments: List.empty(growable: true));
+        var att = await _attachmentsRepository.getCoverAttachment(item.id!);
         if(att != null){
-          Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
+          Uint8List? imageSource = await _attachmentsRepository.getAttachmentById(att.id);
           att.source = imageSource;
           newItem.attachments!.add(att);
         }
@@ -88,12 +92,11 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
       emit(CollectionViewSuccess(state.collection!, state.filteredItems, state.orderOptions!, state.filterModel, state.searchPattern));
     }
     catch(e){
-      print(e.toString());
       return emit(CollectionViewError(e.toString(), state.collection, state.filteredItems, state.orderOptions, state.filterModel, state.searchPattern));
     }
   }
 
-  void updateItem(CollectionItem item, int position){
+  void updateItem(Item item, int position){
     emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions, state.filterModel, state.searchPattern));
 
     int filteredIndex = state.filteredItems!.indexWhere((i) => i.id == item.id);
@@ -133,7 +136,7 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
 
   void applyFilters(FilterModel filterModel){
     emit(CollectionViewLoading(state.collection, state.filteredItems, state.orderOptions, state.filterModel, state.searchPattern));
-    List<CollectionItem> items = List.empty(growable: true);
+    List<Item> items = List.empty(growable: true);
     for(var item in state.collection!.items!){
       if(isFilterCompliant(item, filterModel)){
         items.add(item);
@@ -142,7 +145,7 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
     emit(CollectionViewSuccess(state.collection!, items, state.orderOptions!, filterModel, state.searchPattern));
   }
 
-  bool isFilterCompliant(CollectionItem item, FilterModel filter){
+  bool isFilterCompliant(Item item, FilterModel filter){
     if(filter.rating != null){
       if(item.rating! < filter.rating!.start || item.rating! > filter.rating!.end){
         return false;
@@ -160,7 +163,7 @@ class CollectionViewCubit extends Cubit<CollectionViewState> {
     if(filter.properties.isNotNullOrEmpty){
       if(item.properties.isNotNullOrEmpty){
         for(var prop in item.properties!){
-          CollectionProperty filterProperty = filter.properties!.firstWhere((p) => p.id == prop.id);
+          Property filterProperty = filter.properties!.firstWhere((p) => p.id == prop.id);
           if(filterProperty.isDropdown! || filterProperty.type! == "Checkbox"){
             String val = filterProperty.value!.toUpperCase();
             if(val != "ALL" && val != prop.value!.toUpperCase()){

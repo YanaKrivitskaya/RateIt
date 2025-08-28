@@ -2,28 +2,31 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:rateit/database/collection_repository.dart';
-import 'package:rateit/models/collection_item.model.dart';
+import 'package:rateit/database/attachments_repository.dart';
+import 'package:rateit/database/items_repository.dart';
+import 'package:rateit/models/item.model.dart';
 
 part 'item_view_state.dart';
 
 class ItemViewCubit extends Cubit<ItemViewState> {
-  final CollectionRepository _collectionRepository;
+  final ItemsRepository _itemsRepository;
+  final AttachmentsRepository _attachmentsRepository;
 
   ItemViewCubit() :
-        _collectionRepository = CollectionRepository(),
+        _itemsRepository = ItemsRepository(),
+        _attachmentsRepository = AttachmentsRepository(),
         super(ItemViewInitial());
 
-  void getItem(int collectionId, int itemId) async{
+  void getItem(int itemId) async{
     emit(ItemViewLoading(state.item, state.hasEdit));
 
     try{
-      CollectionItem? item = await _collectionRepository.getItemById(collectionId, itemId);
+      Item? item = await _itemsRepository.getItemById(itemId);
       if(item != null){
         if(item.attachments != null){
           for(var att in item.attachments!){
             var index = item.attachments!.indexOf(att);
-            Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
+            Uint8List? imageSource = await _attachmentsRepository.getAttachmentById(att.id);
             att.source = imageSource;
             item.attachments![index] = att;
           }
@@ -31,7 +34,6 @@ class ItemViewCubit extends Cubit<ItemViewState> {
         emit(ItemViewSuccess(item, state.hasEdit));
       }
     }catch(e){
-      print(e.toString());
       return emit(ItemViewError(e.toString(), null, state.hasEdit));
     }
   }
@@ -44,10 +46,9 @@ class ItemViewCubit extends Cubit<ItemViewState> {
     emit(ItemViewLoading(state.item, state.hasEdit));
 
     try{
-      await _collectionRepository.deleteItem(id);
+      await _itemsRepository.deleteItem(id);
       emit(ItemViewDelete(id));
     }catch(e){
-      print(e.toString());
       return emit(ItemViewError(e.toString(), null, state.hasEdit));
     }
 

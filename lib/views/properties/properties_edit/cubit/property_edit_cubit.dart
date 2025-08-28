@@ -1,27 +1,27 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:rateit/database/collection_repository.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/database/properties_repository.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/models/custom_exception.dart';
 
 part 'property_edit_state.dart';
 
 class PropertyEditCubit extends Cubit<PropertyEditState> {
-  final CollectionRepository _collectionRepository;
+  final PropertiesRepository _propertiesRepository;
 
   PropertyEditCubit() :
-        _collectionRepository = CollectionRepository(),
+        _propertiesRepository = PropertiesRepository(),
         super(PropertyEditInitial());
 
-  void loadProperty(CollectionProperty? property) async{
+  void loadProperty(Property? property) async{
     emit(PropertyEditInitial());
 
     if(property == null){
-      CollectionProperty newProp = CollectionProperty(dropdownOptions: List.empty(growable: true));
+      Property newProp = Property(dropdownOptions: List.empty(growable: true));
       emit(PropertyEditSuccess(newProp, false));
     }else{
       try{
-        CollectionProperty? newProp = await _collectionRepository.getPropertyExpanded(property.id!);
+        Property? newProp = await _propertiesRepository.getProperty(property.id!);
         if(newProp != null){
           emit(PropertyEditSuccess(newProp, newProp.isDropdown!));
         }else{
@@ -34,19 +34,19 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
   }
 
   void updatePropertyType(String value){
-    CollectionProperty property = state.property!.copyWith(type: value);
+    Property property = state.property!.copyWith(type: value);
     emit(PropertyEditSuccess(property, property.isDropdown ?? false));
   }
 
   void toggleDropdown(bool value){
-    CollectionProperty property = state.property!.copyWith(isDropdown: value);
+    Property property = state.property!.copyWith(isDropdown: value);
     emit(PropertyEditSuccess(property, property.isDropdown ?? false));
   }
 
   void updateDropdownValues(int? index, String value, bool delete){
     emit(PropertyEditLoading(state.property));
 
-    CollectionProperty property = state.property!;
+    Property property = state.property!;
     List<String> values = property.dropdownOptions ?? List.empty(growable: true);
 
     if(index != null){
@@ -62,19 +62,19 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
     emit(PropertyEditSuccess(property, property.isDropdown ?? false));
   }
 
-  void submitProperty(int collectionId, CollectionProperty property) async{
+  void submitProperty(int collectionId, Property property) async{
     emit(PropertyEditLoading(property));
 
     try{
-      CollectionProperty? newProperty;
+      Property? newProperty;
 
       if(property.id != null){
-        newProperty = await _collectionRepository.updateProperty(collectionId, property);
+        newProperty = await _propertiesRepository.updateProperty(property);
       }else{
-        newProperty = await _collectionRepository.createProperty(collectionId, property);
+        newProperty = await _propertiesRepository.createProperty(collectionId, property);
       }
       if(newProperty?.id != null){
-        await _collectionRepository.updateDropdownValues(collectionId, newProperty!.id!, property.isDropdown! ? property.dropdownOptions ?? List.empty() : List.empty());
+        await _propertiesRepository.updateDropdownValues(newProperty!.id!, property.isDropdown! ? property.dropdownOptions ?? List.empty() : List.empty());
       }
 
       emit(PropertyEditCreated(property.copyWith(id: newProperty!.id!)));
@@ -87,7 +87,7 @@ class PropertyEditCubit extends Cubit<PropertyEditState> {
     emit(PropertyEditLoading(state.property));
 
     try{
-      await _collectionRepository.deleteProperty(id);
+      await _propertiesRepository.deleteProperty(id);
       emit(PropertyEditDeleted(id));
     }
     catch(e){

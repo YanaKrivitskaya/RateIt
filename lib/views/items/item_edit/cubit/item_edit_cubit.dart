@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
@@ -6,9 +5,12 @@ import 'package:flutter_iconpicker/extensions/list_extensions.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:meta/meta.dart';
+import 'package:rateit/database/attachments_repository.dart';
 import 'package:rateit/database/collection_repository.dart';
-import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/database/items_repository.dart';
+import 'package:rateit/database/properties_repository.dart';
+import 'package:rateit/models/item.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/models/view_models/attachment_view.model.dart';
 import 'package:collection/collection.dart';
 
@@ -16,21 +18,28 @@ part 'item_edit_state.dart';
 
 class ItemEditCubit extends Cubit<ItemEditState> {
   final CollectionRepository _collectionRepository;
+  final PropertiesRepository _propertiesRepository;
+  final ItemsRepository _itemsRepository;
+  final AttachmentsRepository _attachmentsRepository;
+
   ItemEditCubit() :
         _collectionRepository = CollectionRepository(),
+        _propertiesRepository = PropertiesRepository(),
+        _itemsRepository = ItemsRepository(),
+        _attachmentsRepository = AttachmentsRepository(),
         super(ItemEditInitial());
 
-  void loadItem(int collectionId, CollectionItem? item) async{
+  void loadItem(int collectionId, Item? item) async{
     emit(ItemEditInitial());
 
     List<AttachmentViewModel> files = List.empty(growable: true);
-    List<CollectionProperty>? properties = await _collectionRepository.getCollectionProperties(collectionId);
+    List<Property>? properties = await _collectionRepository.getCollectionProperties(collectionId);
 
     if (properties != null){
       for(var prop in properties){
         if(!prop.isDropdown! && prop.type == "Text"){
           try{
-            List<String>? values = await _collectionRepository.getPropertyValuesDistinct(prop.id!);
+            List<String>? values = await _propertiesRepository.getPropertyValuesDistinct(prop.id!);
             if(values != null){
               int index = properties.indexWhere((p) => p.id == prop.id);
               properties[index] = prop.copyWith(dropdownOptions: values);
@@ -46,26 +55,24 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     }
 
     if(item == null){
-      CollectionItem newItem = CollectionItem(properties: properties);
+      Item newItem = Item(properties: properties);
       emit(ItemEditSuccess(newItem, files));
     }else{
       if(item.attachments != null){
         for(var att in item.attachments!){
           if(att.source == null){
-            Uint8List? imageSource = await _collectionRepository.getAttachmentById(collectionId, att.id);
-            //att.source = imageSource;
+            Uint8List? imageSource = await _attachmentsRepository.getAttachmentById(att.id);
             if(imageSource != null){
               files.add(AttachmentViewModel(id: att.id!, source: imageSource, state: AttState.keep));
             }
           }else{
             files.add(AttachmentViewModel(id: att.id!, source: att.source, state: AttState.keep));
           }
-          //item.attachments![index] = att;
         }
       }
       if(item.properties != null && properties.isNotNullOrEmpty){
         for(var prop in properties!){
-          CollectionProperty? p = item.properties!.firstWhereOrNull((p) => p.id == prop.id);
+          Property? p = item.properties!.firstWhereOrNull((p) => p.id == prop.id);
           if(p == null){
             item.properties!.add(prop);
           }else{
@@ -105,16 +112,16 @@ class ItemEditCubit extends Cubit<ItemEditState> {
     emit(ItemEditSuccess(state.item!, files));
   }
 
-  void submitItem(int collectionId, CollectionItem item) async{
+  void submitItem(int collectionId, Item item) async{
     emit(ItemEditLoading(item, state.files));
 
     try{
-      CollectionItem? newItem = item.id != null
-          ? await _collectionRepository.updateItem(collectionId, item)
-          : await _collectionRepository.createItem(collectionId, item);
+      Item? newItem = item.id != null
+          ? await _itemsRepository.updateItem(item)
+          : await _itemsRepository.createItem(collectionId, item);
 
-      List<CollectionProperty> newProps = List.empty(growable: true);
-      List<CollectionProperty> updProps = List.empty(growable: true);
+      List<Property> newProps = List.empty(growable: true);
+      List<Property> updProps = List.empty(growable: true);
 
       if(newItem != null){
         if(item.properties != null){
@@ -125,8 +132,8 @@ class ItemEditCubit extends Cubit<ItemEditState> {
               newProps.add(prop);
             }
           }
-          await _collectionRepository.updatePropertyValues(collectionId, updProps);
-          await _collectionRepository.createPropertyValues(collectionId, newItem.id!, newProps);
+          await _itemsRepository.updatePropertyValues(newItem.id!, updProps);
+          await _itemsRepository.createPropertyValues(newItem.id!, newProps);
         }
 
         if(state.files.isNotNullOrEmpty){
@@ -137,11 +144,11 @@ class ItemEditCubit extends Cubit<ItemEditState> {
               newFiles.add(att.file!);
             }
             if(att.state == AttState.delete){
-              await _collectionRepository.deleteAttachment(collectionId, att.id!);
+              await _attachmentsRepository.deleteAttachment(att.id!);
             }
           }
           if(newFiles.isNotEmpty){
-            await _collectionRepository.createAttachments(collectionId, newItem.id!, newFiles);
+            await _attachmentsRepository.createAttachments(newItem.id!, newFiles);
           }
         }
         emit(ItemEditCreated(newItem, state.files));

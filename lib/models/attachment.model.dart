@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 
-@immutable
 class Attachment{
   final int? id;
   final String? originalName;

@@ -9,7 +9,6 @@ import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
 import 'package:rateit/models/collection.model.dart';
-import 'package:rateit/views/collection/collection_settings/collection_delete.dialog.dart';
 import 'package:rateit/views/collection/collection_edit/cubit/collection_edit_cubit.dart';
 
 class CollectionEditView extends StatefulWidget {
@@ -74,7 +73,7 @@ class _CollectionEditViewState extends State<CollectionEditView> {
             return Scaffold(
               appBar: AppBar(
                   centerTitle: true,
-                  title: Text('Edit collection'),
+                  title: Text(state.collection != null ? 'Edit collection' : 'New collection'),
                   leading: IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {

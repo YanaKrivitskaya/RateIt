@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:rateit/database/collection_repository.dart';
 import 'package:rateit/models/collection.model.dart';
 import 'package:flutter/material.dart';

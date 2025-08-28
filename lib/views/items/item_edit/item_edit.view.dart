@@ -1,12 +1,10 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_iconpicker/extensions/list_extensions.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,12 +15,11 @@ import 'package:rateit/helpers/route_constants.dart';
 import 'package:rateit/helpers/styles.dart';
 import 'package:rateit/helpers/widgets.dart';
 import 'package:rateit/main.dart';
-import 'package:rateit/models/collection_item.model.dart';
-import 'package:rateit/models/collection_property.model.dart';
+import 'package:rateit/models/item.model.dart';
+import 'package:rateit/models/property.model.dart';
 import 'package:rateit/models/view_models/attachment_view.model.dart';
 import 'package:rateit/views/items/item_edit/cubit/item_edit_cubit.dart';
 import 'package:rateit/views/items/item_edit/image_crop.view.dart';
-import 'package:collection/collection.dart';
 
 class ItemEditView extends StatefulWidget {
   final int collectionId;
@@ -66,8 +63,8 @@ class _ItemEditViewState extends State<ItemEditView> {
       },
       child: BlocBuilder<ItemEditCubit, ItemEditState>(
         builder: (context, state){
-          CollectionItem? item = state.item;
-          List<CollectionProperty>? properties = item?.properties;
+          Item? item = state.item;
+          List<Property>? properties = item?.properties;
           return Scaffold(
             appBar: AppBar(
                 centerTitle: true,
@@ -85,7 +82,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                           var isFormValid = _formKey.currentState!.validate();
 
                           if(isFormValid){
-                            List<CollectionProperty> properties = List.empty(growable: true);
+                            List<Property> properties = List.empty(growable: true);
 
                             for (var prop in item.properties!) {
                               var value = _formKey.currentState?.fields[prop.name!]?.value;
@@ -93,7 +90,7 @@ class _ItemEditViewState extends State<ItemEditView> {
                                 properties.add(prop.copyWith(value: _formKey.currentState?.fields[prop.name!]?.value.toString()));
                               }
                             }
-                            CollectionItem newItem = item.copyWith(
+                            Item newItem = item.copyWith(
                                 name: _formKey.currentState?.fields['name']?.value,
                                 description: _formKey.currentState?.fields['description']?.value,
                                 date: _formKey.currentState?.fields['date']?.value,
@@ -323,7 +320,6 @@ class _ItemEditViewState extends State<ItemEditView> {
     final pickedFile = await picker.pickImage(source: imageSource);
 
     if(pickedFile != null){
-      var fileSize = await pickedFile.length();
       var compressPercent = 70;
 
       var args = ImageCropArguments(compress: compressPercent, file: File(pickedFile.path));
