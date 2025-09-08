@@ -155,8 +155,14 @@ class _ItemViewState extends State<ItemView> {
                         String propertyName = property.name!;
                         return Column(children: [
                           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text('$propertyName:', style: appTextStyle(weight: FontWeight.bold, fontSize: fontSize17)),
-                            Text('${property.value ?? ''} ${property.comment ?? ''}', style: appTextStyle(fontSize: fontSize17))
+                            Container(
+                              width: width30,
+                              child: Text('$propertyName:', style: appTextStyle(weight: FontWeight.bold, fontSize: fontSize17)),
+                            ),
+                            Container(
+                              width: width50,
+                              child: Text('${property.value ?? ''} ${property.comment ?? ''}', style: appTextStyle(fontSize: fontSize17))
+                            ),
                           ],),
                           SizedBox(height: sizerHeightsm,)
                         ],);
